@@ -37,6 +37,7 @@
   .btn-google:hover { box-shadow: 0 2px 8px rgba(0,0,0,.15); }
   .btn-google svg { width: 20px; height: 20px; }
 
+  /* Summary */
   .summary { display: flex; align-items: center; gap: 1.25rem; background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; }
   .summary-stats { flex: 1; display: flex; flex-direction: column; gap: 10px; }
   .stat { display: flex; align-items: center; justify-content: space-between; }
@@ -45,19 +46,37 @@
   .stat-value.ok { color: var(--gm); }
   .stat-value.warn { color: var(--warn); }
   .stat-value.danger { color: var(--red); }
-  .goal-row { display: flex; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--bdr); }
+  .goal-row { display: flex; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--bdr); flex-wrap: wrap; }
   .goal-row label { font-size: 13px; color: var(--muted); }
   .goal-row input { width: 58px; font-size: 14px; border: 1px solid var(--bdr); border-radius: var(--rs); padding: 4px 8px; text-align: center; background: var(--bg); color: var(--txt); }
   .goal-row span { font-size: 13px; color: var(--muted); }
+  .btn-calc { background: none; border: 1px solid var(--gm); border-radius: 20px; color: var(--gm); font-size: 12px; padding: 3px 10px; cursor: pointer; }
+  .btn-calc:hover { background: var(--gl); }
 
   .card { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
   .card-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
 
-  /* Search food */
+  /* Calculateur */
+  .calc-panel { background: var(--gl); border: 1px solid #9FE1CB; border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 1.25rem; display: none; }
+  .calc-panel.open { display: block; }
+  .calc-panel h3 { font-size: 14px; font-weight: 600; color: var(--g); margin-bottom: 12px; }
+  .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .calc-field { display: flex; flex-direction: column; gap: 4px; }
+  .calc-field label { font-size: 12px; color: var(--g); font-weight: 500; }
+  .calc-field input, .calc-field select { font-size: 14px; padding: 7px 9px; border: 1px solid #9FE1CB; border-radius: var(--rs); background: #fff; color: var(--txt); }
+  .calc-result { background: var(--g); color: #fff; border-radius: var(--rs); padding: 10px 14px; text-align: center; font-size: 14px; display: none; }
+  .calc-result strong { font-size: 22px; display: block; margin-bottom: 2px; }
+  .calc-result .calc-sub { font-size: 12px; opacity: .8; }
+  .btn-calcgo { background: var(--g); color: #fff; border: none; border-radius: var(--rs); padding: 8px 18px; font-size: 14px; font-weight: 500; cursor: pointer; width: 100%; margin-bottom: 10px; }
+  .btn-calcgo:hover { background: var(--gm); }
+  .btn-apply { background: #fff; color: var(--g); border: 1px solid var(--g); border-radius: var(--rs); padding: 6px 14px; font-size: 13px; cursor: pointer; margin-top: 8px; display: none; }
+  .btn-apply:hover { background: var(--gl); }
+
+  /* Search */
   .search-wrap { position: relative; margin-bottom: 10px; }
   .search-wrap input { width: 100%; font-size: 15px; padding: 10px 14px; border: 1px solid var(--bdr); border-radius: var(--rs); background: var(--bg); color: var(--txt); }
   .search-wrap input:focus { outline: 2px solid var(--gm); border-color: transparent; }
-  .search-status { font-size: 12px; color: var(--muted); margin-top: 5px; min-height: 18px; }
+  .search-status { font-size: 12px; color: var(--muted); margin-top: 4px; min-height: 18px; }
   .autocomplete { position: absolute; top: 100%; left: 0; right: 0; background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--rs); box-shadow: 0 4px 16px rgba(0,0,0,.1); z-index: 100; max-height: 280px; overflow-y: auto; display: none; }
   .autocomplete.open { display: block; }
   .ac-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--bdr); display: flex; align-items: center; justify-content: space-between; }
@@ -66,21 +85,27 @@
   .ac-name { font-size: 14px; color: var(--txt); }
   .ac-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .ac-pts { font-size: 13px; font-weight: 600; color: var(--g); background: var(--gl); border-radius: 20px; padding: 2px 10px; white-space: nowrap; }
-  .ac-source { font-size: 10px; color: #aaa; margin-left: 4px; }
 
-  .add-row { display: grid; grid-template-columns: 80px auto auto; gap: 8px; align-items: end; margin-top: 10px; }
+  /* Add row */
+  .add-row { display: grid; grid-template-columns: 90px 90px 1fr auto; gap: 8px; align-items: end; margin-top: 10px; }
   .field { display: flex; flex-direction: column; gap: 4px; }
   .field label { font-size: 12px; color: var(--muted); }
   .field input, .field select { font-size: 14px; padding: 7px 9px; border: 1px solid var(--bdr); border-radius: var(--rs); background: var(--bg); color: var(--txt); width: 100%; }
   .field input:focus, .field select:focus { outline: 2px solid var(--gm); border-color: transparent; }
+  .pts-preview { font-size: 12px; color: var(--g); font-weight: 600; margin-top: 3px; min-height: 16px; }
   .btn-add { background: var(--g); color: #fff; border: none; border-radius: var(--rs); padding: 7px 16px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; align-self: end; }
   .btn-add:hover { background: var(--gm); }
+  .qty-btns { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .qty-btn { background: none; border: 1px solid var(--bdr); border-radius: 20px; padding: 2px 9px; font-size: 12px; color: var(--muted); cursor: pointer; }
+  .qty-btn:hover { background: var(--gl); border-color: var(--gm); color: var(--g); }
+  .qty-btn.active { background: var(--gl); border-color: var(--gm); color: var(--g); font-weight: 600; }
 
-  .qwrap { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .qwrap { margin-top: 12px; border-top: 1px solid var(--bdr); padding-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
   .qwrap-label { font-size: 11px; color: var(--muted); width: 100%; margin-bottom: 2px; }
   .qbtn { background: var(--gl); border: 1px solid transparent; border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--g); cursor: pointer; }
   .qbtn:hover { border-color: var(--gm); }
 
+  /* Meals */
   .meals { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
   .meal-card { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); overflow: hidden; }
   .meal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid var(--bdr); background: #fafaf8; }
@@ -110,10 +135,12 @@
   .hist-val.ok { color: var(--gm); }
   .hist-val.over { color: var(--red); }
 
-  @media (max-width: 480px) {
-    .add-row { grid-template-columns: 70px 1fr; }
+  @media (max-width: 500px) {
+    .add-row { grid-template-columns: 80px 1fr; }
+    .add-row .field:nth-child(3) { grid-column: 1 / -1; }
     .add-row .btn-add { grid-column: 1 / -1; }
     .summary { flex-direction: column; }
+    .calc-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -121,7 +148,7 @@
 
 <div class="app-header">
   <h1>🌿 Nutrition Tracker</h1>
-  <p>Suivi points — synchronisé sur tous tes appareils</p>
+  <p>Suivi points WW — synchronisé sur tous tes appareils</p>
   <div class="date-nav">
     <button onclick="changeDay(-1)">‹</button>
     <span class="date-lbl" id="date-lbl">—</span>
@@ -145,6 +172,8 @@
   </div>
 
   <div id="main-app" style="display:none">
+
+    <!-- Summary -->
     <div class="summary">
       <div>
         <svg width="90" height="90" viewBox="0 0 100 100">
@@ -162,11 +191,58 @@
         <div class="goal-row">
           <label for="goal-inp">Objectif :</label>
           <input type="number" id="goal-inp" min="1" max="120" value="23" onchange="updateGoal()"/>
-          <span>pts / jour</span>
+          <span>pts/jour</span>
+          <button class="btn-calc" onclick="toggleCalc()">🧮 Calculer mon objectif</button>
         </div>
       </div>
     </div>
 
+    <!-- Calculateur objectif -->
+    <div class="calc-panel" id="calc-panel">
+      <h3>🧮 Calculateur de points personnalisé</h3>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label>Sexe</label>
+          <select id="c-sex">
+            <option value="h">Homme</option>
+            <option value="f">Femme</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>Âge</label>
+          <input type="number" id="c-age" placeholder="ex : 40" min="15" max="99"/>
+        </div>
+        <div class="calc-field">
+          <label>Poids actuel (kg)</label>
+          <input type="number" id="c-weight" placeholder="ex : 85" min="40" max="250"/>
+        </div>
+        <div class="calc-field">
+          <label>Poids cible (kg)</label>
+          <input type="number" id="c-target" placeholder="ex : 75" min="40" max="250"/>
+        </div>
+        <div class="calc-field">
+          <label>Taille (cm)</label>
+          <input type="number" id="c-height" placeholder="ex : 178" min="140" max="220"/>
+        </div>
+        <div class="calc-field">
+          <label>Activité physique</label>
+          <select id="c-activity">
+            <option value="1.2">Sédentaire (bureau)</option>
+            <option value="1.375">Légère (1-2x/sem)</option>
+            <option value="1.55" selected>Modérée (3-4x/sem)</option>
+            <option value="1.725">Active (5x+/sem)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-calcgo" onclick="calcObjectif()">Calculer mon budget points</button>
+      <div class="calc-result" id="calc-result">
+        <strong id="calc-pts">—</strong>
+        <div class="calc-sub" id="calc-detail"></div>
+        <button class="btn-apply" id="btn-apply" onclick="applyObjectif()">✓ Appliquer cet objectif</button>
+      </div>
+    </div>
+
+    <!-- Ajout aliment -->
     <div class="card">
       <div class="card-title">Rechercher un aliment</div>
       <div class="search-wrap">
@@ -178,8 +254,19 @@
 
       <div class="add-row">
         <div class="field">
-          <label>Points</label>
-          <input type="number" id="f-pts" min="0" max="99" value="" placeholder="auto"/>
+          <label>Quantité</label>
+          <input type="number" id="f-qty" value="1" min="0.25" max="20" step="0.25" oninput="updatePtsPreview()"/>
+          <div class="qty-btns">
+            <button class="qty-btn" onclick="setQty(0.5)">½</button>
+            <button class="qty-btn active" onclick="setQty(1)">×1</button>
+            <button class="qty-btn" onclick="setQty(2)">×2</button>
+            <button class="qty-btn" onclick="setQty(3)">×3</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Points (auto)</label>
+          <input type="number" id="f-pts" placeholder="auto" min="0" max="99" step="0.5" oninput="manualPts=true"/>
+          <div class="pts-preview" id="pts-preview"></div>
         </div>
         <div class="field">
           <label>Repas</label>
@@ -199,6 +286,7 @@
       </div>
     </div>
 
+    <!-- Meals -->
     <div class="meals" id="meals-wrap"></div>
 
     <div class="footer-row">
@@ -216,152 +304,66 @@ const CLIENT_ID = '840111749240-4n2emeogkhpkrcb9r3nh5i2pct047klu.apps.googleuser
 const SHEET_ID  = '1UPduStuVMLMEZcIG6oeOaHlX_KeN0uD806oNQ_ckXuA';
 const SCOPE     = 'https://www.googleapis.com/auth/spreadsheets';
 
-// ── Base locale d'aliments (nom, pts/portion, portion en g, description) ─────
 const LOCAL_DB = [
-  // Produits laitiers
-  {n:'Yaourt nature 0%',p:0,g:125,d:'125g'},
-  {n:'Yaourt nature entier',p:2,g:125,d:'125g'},
-  {n:'Fromage blanc 0%',p:1,g:100,d:'100g'},
-  {n:'Fromage blanc 20%',p:2,g:100,d:'100g'},
-  {n:'Crème fraîche épaisse',p:3,g:30,d:'1 c.s. (30g)'},
-  {n:'Crème fraîche légère',p:2,g:30,d:'1 c.s. (30g)'},
-  {n:'Crème liquide entière',p:4,g:30,d:'1 c.s. (30g)'},
-  {n:'Lait entier',p:2,g:200,d:'1 verre (200ml)'},
-  {n:'Lait demi-écrémé',p:1,g:200,d:'1 verre (200ml)'},
-  {n:'Lait écrémé',p:1,g:200,d:'1 verre (200ml)'},
-  {n:'Beurre',p:3,g:10,d:'1 noix (10g)'},
-  {n:'Margarine',p:2,g:10,d:'1 noix (10g)'},
-  {n:'Emmental',p:3,g:30,d:'1 tranche (30g)'},
-  {n:'Camembert',p:3,g:30,d:'1 portion (30g)'},
-  {n:'Brie',p:3,g:30,d:'1 portion (30g)'},
-  {n:'Comté',p:3,g:30,d:'1 tranche (30g)'},
-  {n:'Mozzarella',p:3,g:50,d:'1 boule (50g)'},
-  {n:'Feta',p:2,g:30,d:'30g'},
-  {n:'Chèvre frais',p:2,g:30,d:'30g'},
-  {n:'Ricotta',p:2,g:50,d:'50g'},
-  // Viandes
-  {n:'Blanc de poulet',p:1,g:100,d:'100g'},
-  {n:'Cuisse de poulet',p:3,g:100,d:'100g'},
-  {n:'Blanc de dinde',p:1,g:100,d:'100g'},
-  {n:'Bœuf haché 5%',p:3,g:100,d:'100g'},
-  {n:'Bœuf haché 15%',p:5,g:100,d:'100g'},
-  {n:'Steak',p:4,g:150,d:'150g'},
-  {n:'Porc filet',p:3,g:100,d:'100g'},
-  {n:'Jambon blanc',p:1,g:50,d:'1 tranche (50g)'},
-  {n:'Jambon cru',p:2,g:30,d:'2 tranches (30g)'},
-  {n:'Bacon',p:3,g:30,d:'2 tranches (30g)'},
-  {n:'Saucisse de Francfort',p:4,g:60,d:'1 saucisse (60g)'},
-  {n:'Merguez',p:5,g:80,d:'1 merguez (80g)'},
-  {n:'Escalope de veau',p:2,g:100,d:'100g'},
-  {n:'Côtelette d\'agneau',p:5,g:100,d:'100g'},
-  // Poissons
-  {n:'Saumon',p:3,g:120,d:'1 pavé (120g)'},
-  {n:'Thon en boîte (eau)',p:1,g:80,d:'1/2 boîte (80g)'},
-  {n:'Thon en boîte (huile)',p:3,g:80,d:'1/2 boîte (80g)'},
-  {n:'Cabillaud',p:1,g:150,d:'1 filet (150g)'},
-  {n:'Sole',p:1,g:150,d:'1 filet (150g)'},
-  {n:'Sardines en boîte',p:3,g:80,d:'80g'},
-  {n:'Crevettes',p:1,g:100,d:'100g'},
-  {n:'Moules',p:2,g:150,d:'150g'},
-  {n:'Coquilles Saint-Jacques',p:2,g:100,d:'100g'},
-  // Œufs
-  {n:'Œuf entier',p:2,g:60,d:'1 œuf'},
-  {n:'Blanc d\'œuf',p:0,g:30,d:'1 blanc'},
-  {n:'Omelette (2 œufs)',p:4,g:120,d:'2 œufs'},
-  // Féculents
-  {n:'Pâtes cuites',p:5,g:150,d:'1 portion (150g)'},
-  {n:'Riz cuit',p:4,g:150,d:'1 portion (150g)'},
-  {n:'Pain blanc',p:3,g:50,d:'1 tranche (50g)'},
-  {n:'Pain complet',p:3,g:50,d:'1 tranche (50g)'},
-  {n:'Pain de mie',p:2,g:30,d:'1 tranche (30g)'},
-  {n:'Baguette',p:4,g:60,d:'1/4 baguette (60g)'},
-  {n:'Pomme de terre cuite',p:3,g:150,d:'1 moyenne (150g)'},
-  {n:'Pommes de terre vapeur',p:3,g:150,d:'150g'},
-  {n:'Frites',p:8,g:150,d:'portion (150g)'},
-  {n:'Quinoa cuit',p:4,g:150,d:'150g'},
-  {n:'Lentilles cuites',p:3,g:150,d:'150g'},
-  {n:'Pois chiches cuits',p:4,g:150,d:'150g'},
-  {n:'Haricots rouges',p:3,g:150,d:'150g'},
-  {n:'Flocons d\'avoine',p:4,g:50,d:'50g'},
-  {n:'Muesli',p:5,g:50,d:'50g'},
-  {n:'Corn flakes',p:4,g:40,d:'40g'},
-  {n:'Biscottes',p:2,g:20,d:'2 biscottes'},
-  {n:'Crackers',p:3,g:30,d:'3 crackers'},
-  // Fruits
-  {n:'Pomme',p:0,g:150,d:'1 pomme'},
-  {n:'Banane',p:0,g:120,d:'1 banane'},
-  {n:'Orange',p:0,g:150,d:'1 orange'},
-  {n:'Poire',p:0,g:150,d:'1 poire'},
-  {n:'Pêche',p:0,g:150,d:'1 pêche'},
-  {n:'Raisin',p:0,g:100,d:'1 grappe (100g)'},
-  {n:'Fraises',p:0,g:150,d:'150g'},
-  {n:'Framboises',p:0,g:100,d:'100g'},
-  {n:'Myrtilles',p:0,g:100,d:'100g'},
-  {n:'Ananas',p:0,g:100,d:'100g'},
-  {n:'Mangue',p:0,g:100,d:'100g'},
-  {n:'Melon',p:0,g:200,d:'1 tranche (200g)'},
-  {n:'Pastèque',p:0,g:200,d:'1 tranche (200g)'},
-  {n:'Kiwi',p:0,g:80,d:'1 kiwi'},
-  {n:'Citron (jus)',p:0,g:30,d:'1 c.s.'},
-  // Légumes (tous 0 pts sauf exceptions)
-  {n:'Salade verte',p:0,g:80,d:'1 assiette (80g)'},
-  {n:'Tomates',p:0,g:150,d:'2 tomates (150g)'},
-  {n:'Concombre',p:0,g:150,d:'1/2 concombre'},
-  {n:'Courgette',p:0,g:150,d:'150g'},
-  {n:'Brocoli',p:0,g:150,d:'150g'},
-  {n:'Épinards',p:0,g:100,d:'100g'},
-  {n:'Carottes',p:0,g:150,d:'150g'},
-  {n:'Haricots verts',p:0,g:150,d:'150g'},
-  {n:'Poivrons',p:0,g:150,d:'150g'},
-  {n:'Champignons',p:0,g:100,d:'100g'},
-  {n:'Oignon',p:0,g:80,d:'1 oignon'},
-  {n:'Ail',p:0,g:5,d:'1 gousse'},
-  {n:'Maïs en boîte',p:2,g:80,d:'80g'},
-  {n:'Petits pois',p:2,g:100,d:'100g'},
-  {n:'Avocat',p:5,g:100,d:'1/2 avocat (100g)'},
-  // Matières grasses
-  {n:'Huile d\'olive',p:3,g:10,d:'1 c.s. (10ml)'},
-  {n:'Huile de tournesol',p:3,g:10,d:'1 c.s. (10ml)'},
-  {n:'Vinaigrette',p:2,g:15,d:'1 c.s.'},
-  {n:'Mayonnaise',p:4,g:20,d:'1 c.s. (20g)'},
-  {n:'Ketchup',p:1,g:20,d:'1 c.s. (20g)'},
-  {n:'Moutarde',p:0,g:10,d:'1 c.c.'},
-  // Boissons
-  {n:'Eau',p:0,g:0,d:''},
-  {n:'Café noir',p:0,g:0,d:''},
-  {n:'Thé',p:0,g:0,d:''},
-  {n:'Jus d\'orange',p:3,g:200,d:'1 verre (200ml)'},
-  {n:'Jus de pomme',p:3,g:200,d:'1 verre (200ml)'},
-  {n:'Soda (cola)',p:4,g:330,d:'1 canette (330ml)'},
-  {n:'Soda light',p:0,g:330,d:'1 canette (330ml)'},
-  {n:'Verre de vin rouge',p:4,g:150,d:'1 verre (150ml)'},
-  {n:'Verre de vin blanc',p:4,g:150,d:'1 verre (150ml)'},
-  {n:'Bière (25cl)',p:3,g:250,d:'25cl'},
-  {n:'Champagne',p:3,g:120,d:'1 flûte (120ml)'},
-  {n:'Lait végétal soja',p:1,g:200,d:'1 verre (200ml)'},
-  {n:'Smoothie fruit',p:4,g:200,d:'1 verre (200ml)'},
-  // Snacks & sucreries
-  {n:'Carré de chocolat noir',p:2,g:15,d:'2 carrés (15g)'},
-  {n:'Barre chocolatée',p:7,g:50,d:'1 barre (50g)'},
-  {n:'Chips',p:7,g:40,d:'1 petite portion (40g)'},
-  {n:'Biscuit sec',p:2,g:15,d:'2 biscuits (15g)'},
-  {n:'Gâteau au chocolat',p:8,g:80,d:'1 part (80g)'},
-  {n:'Tarte aux pommes',p:6,g:100,d:'1 part (100g)'},
-  {n:'Glace vanille',p:5,g:100,d:'2 boules (100g)'},
-  {n:'Sorbet fruit',p:3,g:100,d:'2 boules (100g)'},
-  {n:'Miel',p:2,g:15,d:'1 c.s. (15g)'},
-  {n:'Confiture',p:2,g:20,d:'1 c.s. (20g)'},
-  {n:'Sucre',p:1,g:10,d:'1 c.c. (10g)'},
-  {n:'Nutella',p:5,g:20,d:'1 c.s. (20g)'},
-  // Plats courants
-  {n:'Pizza margherita',p:9,g:200,d:'2 parts (200g)'},
-  {n:'Quiche lorraine',p:8,g:150,d:'1 part (150g)'},
-  {n:'Soupe de légumes',p:1,g:250,d:'1 bol (250ml)'},
-  {n:'Soupe de poisson',p:3,g:250,d:'1 bol (250ml)'},
-  {n:'Ratatouille',p:2,g:200,d:'200g'},
-  {n:'Taboulé',p:5,g:150,d:'150g'},
-  {n:'Salade niçoise',p:6,g:300,d:'1 assiette'},
-  {n:'Sandwich jambon beurre',p:10,g:200,d:'1 sandwich'},
+  {n:'Yaourt nature 0%',p:0,d:'125g'},{n:'Yaourt nature entier',p:2,d:'125g'},
+  {n:'Fromage blanc 0%',p:1,d:'100g'},{n:'Fromage blanc 20%',p:2,d:'100g'},
+  {n:'Crème fraîche épaisse',p:3,d:'1 c.s. (30g)'},{n:'Crème fraîche légère',p:2,d:'1 c.s. (30g)'},
+  {n:'Crème liquide entière',p:4,d:'1 c.s. (30g)'},{n:'Crème dessert',p:4,d:'1 pot (125g)'},
+  {n:'Lait entier',p:2,d:'1 verre (200ml)'},{n:'Lait demi-écrémé',p:1,d:'200ml'},{n:'Lait écrémé',p:1,d:'200ml'},
+  {n:'Beurre',p:3,d:'1 noix (10g)'},{n:'Margarine',p:2,d:'10g'},
+  {n:'Emmental',p:3,d:'1 tranche (30g)'},{n:'Camembert',p:3,d:'1 portion (30g)'},
+  {n:'Brie',p:3,d:'30g'},{n:'Comté',p:3,d:'30g'},{n:'Mozzarella',p:3,d:'50g'},
+  {n:'Feta',p:2,d:'30g'},{n:'Chèvre frais',p:2,d:'30g'},{n:'Ricotta',p:2,d:'50g'},
+  {n:'Blanc de poulet',p:1,d:'100g'},{n:'Cuisse de poulet',p:3,d:'100g'},
+  {n:'Blanc de dinde',p:1,d:'100g'},{n:'Bœuf haché 5%',p:3,d:'100g'},
+  {n:'Bœuf haché 15%',p:5,d:'100g'},{n:'Steak',p:4,d:'150g'},
+  {n:'Porc filet',p:3,d:'100g'},{n:'Jambon blanc',p:1,d:'1 tranche (50g)'},
+  {n:'Jambon cru',p:2,d:'2 tranches (30g)'},{n:'Bacon',p:3,d:'2 tranches (30g)'},
+  {n:'Saucisse de Francfort',p:4,d:'60g'},{n:'Merguez',p:5,d:'80g'},
+  {n:'Escalope de veau',p:2,d:'100g'},{n:'Côtelette d\'agneau',p:5,d:'100g'},
+  {n:'Saumon',p:3,d:'1 pavé (120g)'},{n:'Thon en boîte eau',p:1,d:'1/2 boîte (80g)'},
+  {n:'Thon en boîte huile',p:3,d:'80g'},{n:'Cabillaud',p:1,d:'1 filet (150g)'},
+  {n:'Sole',p:1,d:'150g'},{n:'Sardines en boîte',p:3,d:'80g'},
+  {n:'Crevettes',p:1,d:'100g'},{n:'Moules',p:2,d:'150g'},
+  {n:'Coquilles Saint-Jacques',p:2,d:'100g'},
+  {n:'Œuf entier',p:2,d:'1 œuf'},{n:'Blanc d\'œuf',p:0,d:'1 blanc'},{n:'Omelette 2 œufs',p:4,d:'120g'},
+  {n:'Pâtes cuites',p:5,d:'150g'},{n:'Riz cuit',p:4,d:'150g'},
+  {n:'Pain blanc',p:3,d:'1 tranche (50g)'},{n:'Pain complet',p:3,d:'1 tranche (50g)'},
+  {n:'Pain de mie',p:2,d:'1 tranche (30g)'},{n:'Baguette',p:4,d:'1/4 (60g)'},
+  {n:'Pomme de terre cuite',p:3,d:'150g'},{n:'Frites',p:8,d:'150g'},
+  {n:'Quinoa cuit',p:4,d:'150g'},{n:'Lentilles cuites',p:3,d:'150g'},
+  {n:'Pois chiches cuits',p:4,d:'150g'},{n:'Haricots rouges',p:3,d:'150g'},
+  {n:'Flocons d\'avoine',p:4,d:'50g'},{n:'Muesli',p:5,d:'50g'},
+  {n:'Corn flakes',p:4,d:'40g'},{n:'Biscottes',p:2,d:'2 biscottes'},{n:'Crackers',p:3,d:'30g'},
+  {n:'Pomme',p:0,d:'1 pomme'},{n:'Banane',p:0,d:'1 banane'},{n:'Orange',p:0,d:'1 orange'},
+  {n:'Poire',p:0,d:'1 poire'},{n:'Pêche',p:0,d:'1 pêche'},{n:'Raisin',p:0,d:'100g'},
+  {n:'Fraises',p:0,d:'150g'},{n:'Framboises',p:0,d:'100g'},{n:'Myrtilles',p:0,d:'100g'},
+  {n:'Ananas',p:0,d:'100g'},{n:'Mangue',p:0,d:'100g'},{n:'Melon',p:0,d:'1 tranche'},
+  {n:'Pastèque',p:0,d:'1 tranche'},{n:'Kiwi',p:0,d:'1 kiwi'},
+  {n:'Salade verte',p:0,d:'1 assiette'},{n:'Tomates',p:0,d:'2 tomates'},
+  {n:'Concombre',p:0,d:'1/2 concombre'},{n:'Courgette',p:0,d:'150g'},
+  {n:'Brocoli',p:0,d:'150g'},{n:'Épinards',p:0,d:'100g'},{n:'Carottes',p:0,d:'150g'},
+  {n:'Haricots verts',p:0,d:'150g'},{n:'Poivrons',p:0,d:'150g'},
+  {n:'Champignons',p:0,d:'100g'},{n:'Oignon',p:0,d:'1 oignon'},{n:'Ail',p:0,d:'1 gousse'},
+  {n:'Maïs en boîte',p:2,d:'80g'},{n:'Petits pois',p:2,d:'100g'},{n:'Avocat',p:5,d:'1/2 (100g)'},
+  {n:'Huile d\'olive',p:3,d:'1 c.s. (10ml)'},{n:'Huile de tournesol',p:3,d:'1 c.s.'},
+  {n:'Vinaigrette',p:2,d:'1 c.s.'},{n:'Mayonnaise',p:4,d:'1 c.s. (20g)'},
+  {n:'Ketchup',p:1,d:'1 c.s.'},{n:'Moutarde',p:0,d:'1 c.c.'},
+  {n:'Café noir',p:0,d:''},{n:'Thé',p:0,d:''},{n:'Eau',p:0,d:''},
+  {n:'Jus d\'orange',p:3,d:'1 verre (200ml)'},{n:'Jus de pomme',p:3,d:'200ml'},
+  {n:'Soda cola',p:4,d:'1 canette (330ml)'},{n:'Soda light',p:0,d:'330ml'},
+  {n:'Verre de vin rouge',p:4,d:'150ml'},{n:'Verre de vin blanc',p:4,d:'150ml'},
+  {n:'Bière 25cl',p:3,d:'25cl'},{n:'Champagne',p:3,d:'1 flûte (120ml)'},
+  {n:'Lait végétal soja',p:1,d:'200ml'},{n:'Smoothie fruit',p:4,d:'200ml'},
+  {n:'Carré de chocolat noir',p:2,d:'2 carrés (15g)'},{n:'Barre chocolatée',p:7,d:'50g'},
+  {n:'Chips',p:7,d:'40g'},{n:'Biscuit sec',p:2,d:'2 biscuits'},{n:'Gâteau au chocolat',p:8,d:'1 part (80g)'},
+  {n:'Tarte aux pommes',p:6,d:'1 part (100g)'},{n:'Glace vanille',p:5,d:'2 boules (100g)'},
+  {n:'Sorbet fruit',p:3,d:'2 boules (100g)'},{n:'Miel',p:2,d:'1 c.s.'},{n:'Confiture',p:2,d:'1 c.s.'},
+  {n:'Sucre',p:1,d:'1 c.c.'},{n:'Nutella',p:5,d:'1 c.s. (20g)'},
+  {n:'Pizza margherita',p:9,d:'2 parts (200g)'},{n:'Quiche lorraine',p:8,d:'1 part (150g)'},
+  {n:'Soupe de légumes',p:1,d:'1 bol (250ml)'},{n:'Soupe de poisson',p:3,d:'250ml'},
+  {n:'Ratatouille',p:2,d:'200g'},{n:'Taboulé',p:5,d:'150g'},
+  {n:'Salade niçoise',p:6,d:'1 assiette'},{n:'Sandwich jambon beurre',p:10,d:'1 sandwich'},
 ];
 
 const MEALS = ['Petit-déjeuner','Déjeuner','Dîner','Collation'];
@@ -374,105 +376,150 @@ let token = null;
 let syncTimer = null;
 let tokenClient = null;
 let selectedFood = null;
+let basePts = null;
+let manualPts = false;
 let acIdx = -1;
 let acResults = [];
 let searchTimer = null;
+let calcedObjectif = null;
 
-// ── Date helpers ───────────────────────────────────────────────────────────────
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 function fromKey(k){ const[y,m,d]=k.split('-'); return new Date(+y,+m-1,+d); }
 function toKey(d){ const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
 function fmtDate(k){
   const d=fromKey(k),t=todayKey(),y=toKey(new Date(Date.now()-86400000));
-  if(k===t) return "Aujourd'hui";
-  if(k===y) return 'Hier';
+  if(k===t) return "Aujourd'hui"; if(k===y) return 'Hier';
   return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
 }
+function loadLocal(){ try{ data=JSON.parse(localStorage.getItem('nt_v4')||'{}'); }catch(e){ data={}; } }
+function saveLocal(){ try{ localStorage.setItem('nt_v4',JSON.stringify(data)); }catch(e){} }
 
-// ── Local storage ──────────────────────────────────────────────────────────────
-function loadLocal(){ try{ data=JSON.parse(localStorage.getItem('nt_v3')||'{}'); }catch(e){ data={}; } }
-function saveLocal(){ try{ localStorage.setItem('nt_v3',JSON.stringify(data)); }catch(e){} }
-
-// ── Points WW (SmartPoints) ────────────────────────────────────────────────────
-function calcPoints(kcal, fat_sat, sugar, protein){
-  const pts = (kcal * 0.0305) + (fat_sat * 0.275) + (sugar * 0.12) - (protein * 0.098);
-  return Math.max(0, Math.round(pts));
+// ── Quantité ───────────────────────────────────────────────────────────────────
+function setQty(v){
+  document.getElementById('f-qty').value=v;
+  document.querySelectorAll('.qty-btn').forEach(b=>b.classList.toggle('active', parseFloat(b.textContent.replace('×','').replace('½','0.5'))===v || (v===0.5&&b.textContent==='½')));
+  manualPts=false;
+  updatePtsPreview();
 }
 
-// ── Recherche aliments ─────────────────────────────────────────────────────────
+function updatePtsPreview(){
+  if(manualPts||basePts===null){ document.getElementById('pts-preview').textContent=''; return; }
+  const qty=parseFloat(document.getElementById('f-qty').value)||1;
+  const total=Math.round(basePts*qty*10)/10;
+  document.getElementById('f-pts').value=total;
+  document.getElementById('pts-preview').textContent='= '+total+' pt'+(total!==1?'s':'');
+}
+
+// ── Calculateur objectif ───────────────────────────────────────────────────────
+function toggleCalc(){
+  document.getElementById('calc-panel').classList.toggle('open');
+}
+
+function calcObjectif(){
+  const sex=document.getElementById('c-sex').value;
+  const age=parseFloat(document.getElementById('c-age').value);
+  const w=parseFloat(document.getElementById('c-weight').value);
+  const wt=parseFloat(document.getElementById('c-target').value);
+  const h=parseFloat(document.getElementById('c-height').value);
+  const act=parseFloat(document.getElementById('c-activity').value);
+  if([age,w,wt,h].some(isNaN)){ alert('Remplis tous les champs !'); return; }
+
+  // Métabolisme de base (Harris-Benedict)
+  let bmr;
+  if(sex==='h') bmr = 88.362 + (13.397*w) + (4.799*h) - (5.677*age);
+  else           bmr = 447.593 + (9.247*w) + (3.098*h) - (4.330*age);
+
+  // Dépense totale
+  const tdee = bmr * act;
+
+  // Déficit pour perdre du poids (500 kcal/jour ≈ 0.5kg/semaine)
+  const deficit = w > wt ? 500 : 0;
+  const kcalTarget = tdee - deficit;
+
+  // Conversion kcal → points WW (approximation : 1pt ≈ 33 kcal)
+  const pts = Math.round(kcalTarget / 33);
+  const ptsMin = Math.max(18, pts - 2);
+  const ptsMax = pts + 2;
+
+  calcedObjectif = pts;
+
+  const res = document.getElementById('calc-result');
+  document.getElementById('calc-pts').textContent = ptsMin + ' – ' + ptsMax + ' pts / jour';
+  document.getElementById('calc-detail').textContent =
+    'Métabolisme de base : '+Math.round(bmr)+' kcal · Dépense totale : '+Math.round(tdee)+' kcal'+(deficit?' · Déficit : '+deficit+' kcal/j':'');
+  document.getElementById('btn-apply').style.display='inline-block';
+  res.style.display='block';
+}
+
+function applyObjectif(){
+  if(!calcedObjectif) return;
+  document.getElementById('goal-inp').value=calcedObjectif;
+  updateGoal();
+  document.getElementById('calc-panel').classList.remove('open');
+}
+
+// ── Recherche ──────────────────────────────────────────────────────────────────
 function searchLocal(q){
-  const lq = q.toLowerCase().trim();
+  const lq=q.toLowerCase().trim();
   if(!lq) return [];
-  return LOCAL_DB.filter(f => f.n.toLowerCase().includes(lq)).slice(0,8).map(f=>({
-    name: f.n, pts: f.p, portion: f.d, source: 'local'
-  }));
+  return LOCAL_DB.filter(f=>f.n.toLowerCase().includes(lq)).slice(0,8).map(f=>({name:f.n,pts:f.p,portion:f.d,source:'local'}));
+}
+
+function calcWWPts(kcal,fatSat,sugar,protein){
+  return Math.max(0,Math.round((kcal*0.0305)+(fatSat*0.275)+(sugar*0.12)-(protein*0.098)));
 }
 
 async function searchOFF(q){
-  try {
+  try{
     setSearchStatus('🔍 Recherche sur Open Food Facts...');
-    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=10&lc=fr&cc=fr&fields=product_name,nutriments,quantity`;
-    const r = await fetch(url);
-    const d = await r.json();
-    const products = (d.products||[]).filter(p=>p.product_name && p.nutriments);
-    return products.map(p=>{
-      const n = p.nutriments;
-      const kcal = n['energy-kcal_100g']||0;
-      const fat_sat = n['saturated-fat_100g']||0;
-      const sugar = n['sugars_100g']||0;
-      const protein = n['proteins_100g']||0;
-      const pts = calcPoints(kcal, fat_sat, sugar, protein);
-      const qty = p.quantity||'100g';
-      return { name: p.product_name, pts, portion: qty, source: 'OFF', kcal: Math.round(kcal) };
+    const url=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=12&lc=fr&cc=fr&fields=product_name,nutriments,quantity`;
+    const r=await fetch(url);
+    const d=await r.json();
+    return (d.products||[]).filter(p=>p.product_name&&p.nutriments).map(p=>{
+      const n=p.nutriments;
+      const kcal=n['energy-kcal_100g']||0,fatSat=n['saturated-fat_100g']||0,sugar=n['sugars_100g']||0,protein=n['proteins_100g']||0;
+      return{name:p.product_name,pts:calcWWPts(kcal,fatSat,sugar,protein),portion:p.quantity||'100g',source:'OFF',kcal:Math.round(kcal)};
     }).filter(p=>p.name.length>2).slice(0,8);
-  } catch(e) {
-    setSearchStatus('⚠ Open Food Facts indisponible');
-    return [];
-  }
+  }catch(e){ setSearchStatus('⚠ Open Food Facts indisponible'); return []; }
 }
 
 function setSearchStatus(msg){ document.getElementById('search-status').textContent=msg; }
 
 async function onSearch(){
-  const q = document.getElementById('f-search').value.trim();
-  selectedFood = null;
+  const q=document.getElementById('f-search').value.trim();
+  selectedFood=null; basePts=null; manualPts=false;
   document.getElementById('f-pts').value='';
-  if(q.length < 2){ closeAC(); setSearchStatus(''); return; }
-
-  // Local d'abord
-  const local = searchLocal(q);
+  document.getElementById('pts-preview').textContent='';
+  if(q.length<2){ closeAC(); setSearchStatus(''); return; }
+  const local=searchLocal(q);
   if(local.length>0){
-    showAC(local);
-    setSearchStatus('');
-    // Cherche aussi OFF en arrière-plan
+    showAC(local); setSearchStatus('');
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(async()=>{
-      const off = await searchOFF(q);
-      const combined = [...local];
+    searchTimer=setTimeout(async()=>{
+      const off=await searchOFF(q);
+      const combined=[...local];
       off.forEach(o=>{ if(!combined.find(c=>c.name.toLowerCase()===o.name.toLowerCase())) combined.push(o); });
-      showAC(combined.slice(0,12));
-      setSearchStatus('');
-    }, 600);
+      showAC(combined.slice(0,12)); setSearchStatus('');
+    },600);
   } else {
     setSearchStatus('🔍 Recherche...');
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(async()=>{
-      const off = await searchOFF(q);
+    searchTimer=setTimeout(async()=>{
+      const off=await searchOFF(q);
       if(off.length>0){ showAC(off); setSearchStatus(''); }
-      else { closeAC(); setSearchStatus('Aucun résultat — saisis les points manuellement.'); }
-    }, 400);
+      else{ closeAC(); setSearchStatus('Aucun résultat — saisis les points manuellement.'); }
+    },400);
   }
 }
 
 function showAC(results){
-  acResults = results;
-  acIdx = -1;
-  const list = document.getElementById('ac-list');
-  list.innerHTML = results.map((r,i)=>`
+  acResults=results; acIdx=-1;
+  const list=document.getElementById('ac-list');
+  list.innerHTML=results.map((r,i)=>`
     <div class="ac-item" data-i="${i}" onmousedown="selectAC(${i})">
       <div>
         <div class="ac-name">${r.name}</div>
-        <div class="ac-sub">${r.portion||''}${r.kcal?' · '+r.kcal+' kcal':''}<span class="ac-source">${r.source==='OFF'?' · Open Food Facts':''}</span></div>
+        <div class="ac-sub">${r.portion||''}${r.kcal?' · '+r.kcal+' kcal':''}${r.source==='OFF'?' · Open Food Facts':''}</div>
       </div>
       <span class="ac-pts">${r.pts} pt${r.pts!==1?'s':''}</span>
     </div>`).join('');
@@ -482,45 +529,44 @@ function showAC(results){
 function closeAC(){ document.getElementById('ac-list').classList.remove('open'); acResults=[]; acIdx=-1; }
 
 function selectAC(i){
-  const r = acResults[i];
-  if(!r) return;
-  selectedFood = r;
-  document.getElementById('f-search').value = r.name;
-  document.getElementById('f-pts').value = r.pts;
-  setSearchStatus('✓ '+r.name+(r.portion?' — '+r.portion:''));
+  const r=acResults[i]; if(!r) return;
+  selectedFood=r; basePts=r.pts; manualPts=false;
+  document.getElementById('f-search').value=r.name;
+  const qty=parseFloat(document.getElementById('f-qty').value)||1;
+  const total=Math.round(basePts*qty*10)/10;
+  document.getElementById('f-pts').value=total;
+  document.getElementById('pts-preview').textContent='= '+total+' pt'+(total!==1?'s':'')+' pour ×'+qty;
+  setSearchStatus('✓ '+(r.portion?r.portion:''));
   closeAC();
 }
 
 function onSearchKey(e){
-  const list = document.getElementById('ac-list');
+  const list=document.getElementById('ac-list');
   if(!list.classList.contains('open')) return;
-  const items = list.querySelectorAll('.ac-item');
+  const items=list.querySelectorAll('.ac-item');
   if(e.key==='ArrowDown'){ e.preventDefault(); acIdx=Math.min(acIdx+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('selected',i===acIdx)); }
   else if(e.key==='ArrowUp'){ e.preventDefault(); acIdx=Math.max(acIdx-1,0); items.forEach((el,i)=>el.classList.toggle('selected',i===acIdx)); }
   else if(e.key==='Enter'){ e.preventDefault(); if(acIdx>=0) selectAC(acIdx); else if(acResults.length>0) selectAC(0); else addFood(); }
-  else if(e.key==='Escape'){ closeAC(); }
+  else if(e.key==='Escape') closeAC();
 }
-
-document.addEventListener('click', e=>{ if(!e.target.closest('.search-wrap')) closeAC(); });
+document.addEventListener('click',e=>{ if(!e.target.closest('.search-wrap')) closeAC(); });
 
 // ── Auth ───────────────────────────────────────────────────────────────────────
 function startLogin(){ if(tokenClient) tokenClient.requestAccessToken({prompt:'consent'}); }
 function handleAuthBtn(){ if(token) signOut(); else startLogin(); }
-
 function onGapiLoad(){
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID, scope: SCOPE,
-    callback: (resp)=>{ if(!resp.error){ token=resp.access_token; onLoggedIn(); } }
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:CLIENT_ID,scope:SCOPE,
+    callback:(resp)=>{ if(!resp.error){ token=resp.access_token; onLoggedIn(); } }
   });
   google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID, scope: SCOPE, prompt: '',
-    callback: (resp)=>{
-      if(!resp.error && resp.access_token){ token=resp.access_token; onLoggedIn(); }
-      else { document.getElementById('login-screen').style.display='block'; }
+    client_id:CLIENT_ID,scope:SCOPE,prompt:'',
+    callback:(resp)=>{
+      if(!resp.error&&resp.access_token){ token=resp.access_token; onLoggedIn(); }
+      else document.getElementById('login-screen').style.display='block';
     }
   }).requestAccessToken();
 }
-
 function onLoggedIn(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main-app').style.display='block';
@@ -528,7 +574,6 @@ function onLoggedIn(){
   document.getElementById('auth-btn').textContent='Déconnexion';
   loadLocal(); render(); pullSheets();
 }
-
 function signOut(){
   if(token) google.accounts.oauth2.revoke(token);
   token=null;
@@ -548,7 +593,6 @@ async function sheetReq(method,path,body){
   return r.json();
 }
 function setSyncSt(cls,msg){ const e=document.getElementById('sync-st'); e.className='sync-status '+cls; e.textContent=msg; }
-
 async function pullSheets(){
   try{
     setSyncSt('busy','⏳ Sync...');
@@ -556,20 +600,14 @@ async function pullSheets(){
     const rows=(res.values||[]).slice(1);
     const remote={};
     rows.forEach(r=>{
-      const[date,meal,name,pts,goal]=r;
-      if(!date) return;
+      const[date,meal,name,pts,goal]=r; if(!date) return;
       if(!remote[date]) remote[date]={goal:parseInt(goal)||23,items:[]};
       if(name) remote[date].items.push({name,pts:parseFloat(pts)||0,meal,id:Date.now()+Math.random()});
     });
     Object.keys(remote).forEach(k=>{ if(!data[k]) data[k]=remote[k]; });
-    saveLocal(); render();
-    setSyncSt('ok','✓ Synchronisé');
-  }catch(e){
-    if(e.message&&e.message.includes('Unable to parse range')){ await createTab(); }
-    else setSyncSt('err','⚠ Erreur sync');
-  }
+    saveLocal(); render(); setSyncSt('ok','✓ Synchronisé');
+  }catch(e){ setSyncSt('err','⚠ Erreur sync'); }
 }
-
 async function pushSheets(){
   if(!token) return;
   try{
@@ -582,16 +620,8 @@ async function pushSheets(){
     });
     await sheetReq('POST','/values/Données!A1:E:clear');
     await sheetReq('PUT','/values/Données!A1?valueInputOption=RAW',{range:'Données!A1',majorDimension:'ROWS',values:rows});
-    setSyncSt('ok','✓ Sauvegardé ✓');
+    setSyncSt('ok','✓ Sauvegardé');
   }catch(e){ setSyncSt('err','⚠ Erreur'); }
-}
-
-async function createTab(){
-  await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+':batchUpdate',{
-    method:'POST',
-    headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-    body:JSON.stringify({requests:[{addSheet:{properties:{title:'Données'}}}]})
-  });
 }
 function schedulePush(){ clearTimeout(syncTimer); syncTimer=setTimeout(pushSheets,1500); }
 
@@ -606,53 +636,46 @@ function updateGoal(){ day().goal=parseInt(document.getElementById('goal-inp').v
 function addFood(){
   const name=document.getElementById('f-search').value.trim();
   const pts=parseFloat(document.getElementById('f-pts').value);
+  const qty=parseFloat(document.getElementById('f-qty').value)||1;
   const meal=document.getElementById('f-meal').value;
   if(!name){ document.getElementById('f-search').focus(); return; }
-  if(isNaN(pts)){ document.getElementById('f-pts').focus(); setSearchStatus('⚠ Saisis les points manuellement'); return; }
-  day().items.push({name,pts,meal,id:Date.now()});
+  if(isNaN(pts)){ setSearchStatus('⚠ Saisis les points manuellement'); document.getElementById('f-pts').focus(); return; }
+  const label=qty!==1?name+' ×'+qty:name;
+  day().items.push({name:label,pts:Math.round(pts*10)/10,meal,id:Date.now()});
   saveLocal(); schedulePush();
   document.getElementById('f-search').value='';
   document.getElementById('f-pts').value='';
-  setSearchStatus('');
-  selectedFood=null;
+  document.getElementById('f-qty').value='1';
+  document.getElementById('pts-preview').textContent='';
+  setSearchStatus(''); selectedFood=null; basePts=null; manualPts=false;
+  setQty(1);
   document.getElementById('f-search').focus();
   render();
 }
 
-function addQuick(name,pts){
-  const meal=document.getElementById('f-meal').value;
-  day().items.push({name,pts,meal,id:Date.now()});
-  saveLocal(); schedulePush(); render();
-}
-
+function addQuick(name,pts){ const meal=document.getElementById('f-meal').value; day().items.push({name,pts,meal,id:Date.now()}); saveLocal(); schedulePush(); render(); }
 function deleteItem(id){ day().items=day().items.filter(i=>i.id!==id); saveLocal(); schedulePush(); render(); }
 function resetDay(){ if(!confirm('Vider ce jour ?')) return; day().items=[]; saveLocal(); schedulePush(); render(); }
 function r1(v){ return Math.round(v*10)/10; }
 
-// ── Render ─────────────────────────────────────────────────────────────────────
 function render(){
   const dd=day(),goal=dd.goal||23;
   const used=dd.items.reduce((s,i)=>s+(i.pts||0),0);
   const left=goal-used,pct=Math.min(1,used/goal);
-
   document.getElementById('date-lbl').textContent=fmtDate(cur);
   document.getElementById('goal-inp').value=goal;
   document.getElementById('ring-n').textContent=r1(used);
-
   const ring=document.getElementById('ring');
   ring.style.strokeDashoffset=251.2*(1-pct);
   ring.style.stroke=used>goal?'#e63946':used>=goal*.85?'#e07b22':'#40916c';
-
   const lEl=document.getElementById('m-left');
   lEl.textContent=r1(left);
   lEl.className='stat-value'+(left<0?' danger':left<goal*.2?' warn':' ok');
   document.getElementById('m-used').textContent=r1(used);
 
-  // Raccourcis
   const qw=document.getElementById('qwrap-inner'); qw.innerHTML='';
   QUICK_NAMES.forEach(name=>{
-    const food=LOCAL_DB.find(f=>f.n===name);
-    if(!food) return;
+    const food=LOCAL_DB.find(f=>f.n===name); if(!food) return;
     const b=document.createElement('button'); b.className='qbtn';
     b.textContent=food.n+' ('+food.p+'pt'+(food.p!==1?'s)':')');
     b.onclick=()=>addQuick(food.n,food.p); qw.appendChild(b);
@@ -679,7 +702,6 @@ function render(){
   }).join('');
 }
 
-// ── Boot ───────────────────────────────────────────────────────────────────────
 loadLocal();
 document.getElementById('date-lbl').textContent=fmtDate(cur);
 const gsi=document.createElement('script');
