@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 Nutrition Tracker</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root {
+    --g: #2d6a4f; --gm: #40916c; --gl: #d8f3dc;
+    --red: #e63946; --warn: #e07b22;
+    --bg: #f8f9f4; --surf: #fff; --bdr: #e5e7df;
+    --txt: #1a1c18; --muted: #5a6354;
+    --r: 12px; --rs: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--txt); min-height: 100vh; padding-bottom: 80px; }
+
+  .app-header { background: var(--g); color: #fff; padding: 1.25rem 1.5rem 1rem; position: sticky; top: 0; z-index: 10; }
+  .app-header h1 { font-size: 18px; font-weight: 600; }
+  .app-header p { font-size: 12px; opacity: .7; margin-top: 2px; }
+  .date-nav { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .date-nav button { background: rgba(255,255,255,.2); border: none; border-radius: 6px; color: #fff; padding: 4px 12px; cursor: pointer; font-size: 16px; }
+  .date-nav button:hover { background: rgba(255,255,255,.3); }
+  .date-lbl { font-size: 14px; font-weight: 500; flex: 1; text-align: center; }
+
+  .auth-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,.15); border-radius: 8px; padding: 6px 12px; margin-top: 10px; }
+  .auth-status { font-size: 12px; }
+  .btn-signout { background: rgba(255,255,255,.2); border: none; border-radius: 6px; color: #fff; padding: 3px 10px; font-size: 12px; cursor: pointer; }
+  .btn-signout:hover { background: rgba(255,255,255,.3); }
+
+  .content { max-width: 640px; margin: 0 auto; padding: 1.25rem 1rem; }
+
+  .summary { display: flex; align-items: center; gap: 1.25rem; background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; }
+  .summary-stats { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .stat { display: flex; align-items: center; justify-content: space-between; }
+  .stat-label { font-size: 13px; color: var(--muted); }
+  .stat-value { font-size: 16px; font-weight: 600; }
+  .stat-value.ok { color: var(--gm); }
+  .stat-value.warn { color: var(--warn); }
+  .stat-value.danger { color: var(--red); }
+  .goal-row { display: flex; align-items: center; gap: 8px; padding-top: 8px; border-top: 1px solid var(--bdr); }
+  .goal-row label { font-size: 13px; color: var(--muted); }
+  .goal-row input { width: 58px; font-size: 14px; border: 1px solid var(--bdr); border-radius: var(--rs); padding: 4px 8px; text-align: center; background: var(--bg); color: var(--txt); }
+  .goal-row span { font-size: 13px; color: var(--muted); }
+
+  .card { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .card-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+  .add-grid { display: grid; grid-template-columns: 1fr 62px auto auto; gap: 8px; align-items: end; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; color: var(--muted); }
+  .field input, .field select { font-size: 14px; padding: 7px 9px; border: 1px solid var(--bdr); border-radius: var(--rs); background: var(--bg); color: var(--txt); width: 100%; }
+  .field input:focus, .field select:focus { outline: 2px solid var(--gm); border-color: transparent; }
+  .btn-add { background: var(--g); color: #fff; border: none; border-radius: var(--rs); padding: 7px 14px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; align-self: end; }
+  .btn-add:hover { background: var(--gm); }
+  .btn-add:active { transform: scale(.98); }
+  .qwrap { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .qbtn { background: var(--gl); border: 1px solid transparent; border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--g); cursor: pointer; }
+  .qbtn:hover { border-color: var(--gm); }
+
+  .meals { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
+  .meal-card { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); overflow: hidden; }
+  .meal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid var(--bdr); background: #fafaf8; }
+  .meal-hdr-l { display: flex; align-items: center; gap: 7px; }
+  .meal-ico { font-size: 16px; }
+  .meal-nm { font-size: 14px; font-weight: 600; }
+  .meal-badge { font-size: 12px; background: var(--gl); color: var(--g); border-radius: 20px; padding: 2px 9px; font-weight: 500; }
+  .food-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-bottom: 1px solid var(--bdr); }
+  .food-row:last-child { border-bottom: none; }
+  .food-nm { font-size: 14px; }
+  .food-r { display: flex; align-items: center; gap: 7px; }
+  .pts-badge { font-size: 12px; background: #eef2ff; color: #3730a3; border-radius: 20px; padding: 2px 9px; }
+  .del { background: none; border: none; cursor: pointer; color: #bbb; font-size: 18px; line-height: 1; border-radius: 6px; padding: 1px 5px; }
+  .del:hover { background: #fde8e8; color: var(--red); }
+  .empty-m { padding: 9px 14px; font-size: 13px; color: #aaa; font-style: italic; }
+
+  .footer-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .btn-ghost { background: none; border: 1px solid var(--bdr); border-radius: var(--rs); padding: 5px 12px; font-size: 12px; color: var(--muted); cursor: pointer; }
+  .btn-ghost:hover { background: #fde8e8; border-color: #f9a8a8; color: var(--red); }
+  .sync-status { font-size: 12px; color: var(--muted); }
+  .sync-status.syncing { color: var(--warn); }
+  .sync-status.synced { color: var(--gm); }
+  .sync-status.error { color: var(--red); }
+
+  .hist-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--bdr); font-size: 13px; }
+  .hist-row:last-child { border-bottom: none; }
+  .hist-date { color: var(--muted); }
+  .hist-val { font-weight: 600; }
+  .hist-val.ok { color: var(--gm); }
+  .hist-val.over { color: var(--red); }
+
+  .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; padding: 2rem; }
+  .login-screen h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+  .login-screen p { font-size: 14px; color: var(--muted); margin-bottom: 2rem; max-width: 320px; }
+
+  @media (max-width: 480px) {
+    .add-grid { grid-template-columns: 1fr 62px; }
+    .add-grid .btn-add { grid-column: 1 / -1; }
+    .summary { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>🌿 Nutrition Tracker</h1>
+  <p>Suivi points — synchronisé sur tous tes appareils</p>
+  <div class="date-nav">
+    <button onclick="changeDay(-1)">‹</button>
+    <span class="date-lbl" id="date-lbl">Chargement...</span>
+    <button onclick="changeDay(1)">›</button>
+  </div>
+  <div class="auth-bar">
+    <span class="auth-status" id="auth-status">⏳ Connexion...</span>
+    <button class="btn-signout" id="btn-signout" onclick="signOut()" style="display:none">Déconnexion</button>
+  </div>
+</div>
+
+<div class="content">
+  <div id="login-screen" class="login-screen" style="display:none">
+    <h2>Connecte-toi pour commencer</h2>
+    <p>Tes données seront synchronisées sur tous tes appareils via Google Sheets.</p>
+    <div id="g-signin-btn"></div>
+  </div>
+
+  <div id="main-app" style="display:none">
+    <div class="summary">
+      <div>
+        <svg width="96" height="96" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7df" stroke-width="10"/>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#40916c" stroke-width="10"
+            stroke-dasharray="251.2" stroke-dashoffset="251.2"
+            stroke-linecap="round" transform="rotate(-90 50 50)" id="ring"/>
+          <text x="50" y="46" text-anchor="middle" font-size="20" font-weight="700" fill="#1a1c18" id="ring-n">0</text>
+          <text x="50" y="59" text-anchor="middle" font-size="10" fill="#5a6354">pts</text>
+        </svg>
+      </div>
+      <div class="summary-stats">
+        <div class="stat"><span class="stat-label">Points restants</span><span class="stat-value ok" id="m-left">23</span></div>
+        <div class="stat"><span class="stat-label">Points utilisés</span><span class="stat-value" id="m-used">0</span></div>
+        <div class="goal-row">
+          <label for="goal-inp">Objectif :</label>
+          <input type="number" id="goal-inp" min="1" max="120" value="23" onchange="updateGoal()"/>
+          <span>pts / jour</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ajouter un aliment</div>
+      <div class="add-grid">
+        <div class="field"><label>Aliment</label><input type="text" id="f-name" placeholder="ex : yaourt nature" onkeydown="if(event.key==='Enter')addFood()"/></div>
+        <div class="field"><label>Points</label><input type="number" id="f-pts" min="0" max="99" value="2" onkeydown="if(event.key==='Enter')addFood()"/></div>
+        <div class="field"><label>Repas</label>
+          <select id="f-meal">
+            <option value="Petit-déjeuner">🌅 Matin</option>
+            <option value="Déjeuner" selected>☀️ Midi</option>
+            <option value="Dîner">🌙 Soir</option>
+            <option value="Collation">🍎 Snack</option>
+          </select>
+        </div>
+        <button class="btn-add" onclick="addFood()">+ Ajouter</button>
+      </div>
+      <div class="qwrap" id="qwrap"></div>
+    </div>
+
+    <div class="meals" id="meals-wrap"></div>
+
+    <div class="footer-row">
+      <button class="btn-ghost" onclick="resetDay()">🗑 Vider ce jour</button>
+      <span class="sync-status" id="sync-status"></span>
+    </div>
+
+    <div class="card-title" style="margin-bottom:8px">Historique (7 derniers jours)</div>
+    <div class="card" style="padding:.5rem 1.25rem"><div id="hist-wrap"></div></div>
+  </div>
+</div>
+
+<script>
+const CLIENT_ID = '840111749240-4n2emeogkhpkrcb9r3nh5i2pct047klu.apps.googleusercontent.com';
+const SHEET_ID  = '1UPduStuVMLMEZcIG6oeOaHlX_KeN0uD806oNQ_ckXuA';
+const SCOPES    = 'https://www.googleapis.com/auth/spreadsheets';
+
+const MEALS = ['Petit-déjeuner','Déjeuner','Dîner','Collation'];
+const MICO  = {'Petit-déjeuner':'🌅','Déjeuner':'☀️','Dîner':'🌙','Collation':'🍎'};
+const QUICK = [
+  {n:'Yaourt 0%',p:0},{n:'Blanc poulet',p:1},{n:'Œuf',p:2},{n:'Pain complet',p:3},
+  {n:'Fromage blanc',p:1},{n:'Pomme',p:0},{n:'Banane',p:0},{n:'Pâtes 150g',p:5},
+  {n:'Riz 150g',p:4},{n:'Huile 1c.s.',p:3},{n:'Verre de vin',p:4},{n:'Saumon 120g',p:3},
+  {n:'Salade verte',p:0},{n:'Fromage 30g',p:3},{n:'Barre choc.',p:6}
+];
+
+let cur = todayKey();
+let data = {};
+let accessToken = null;
+let syncTimer = null;
+
+// ── Date helpers ──────────────────────────────────────────────────────────────
+function todayKey() { return new Date().toISOString().slice(0,10); }
+function fromKey(k) { const [y,m,d]=k.split('-'); return new Date(+y,+m-1,+d); }
+function toKey(d)   { const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function fmtDate(k) {
+  const d=fromKey(k), t=todayKey(), y=toKey(new Date(Date.now()-86400000));
+  if(k===t) return "Aujourd'hui";
+  if(k===y) return 'Hier';
+  return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+}
+
+// ── Local storage ─────────────────────────────────────────────────────────────
+function loadLocal()  { try { data=JSON.parse(localStorage.getItem('nt_data')||'{}'); } catch(e) { data={}; } }
+function saveLocal()  { try { localStorage.setItem('nt_data',JSON.stringify(data)); } catch(e) {} }
+
+// ── Google auth ───────────────────────────────────────────────────────────────
+function initGoogleAuth() {
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID,
+    callback: onSignIn,
+    auto_select: true
+  });
+  google.accounts.id.renderButton(document.getElementById('g-signin-btn'), {
+    theme: 'outline', size: 'large', text: 'signin_with', locale: 'fr'
+  });
+
+  const tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: onToken
+  });
+  window._tokenClient = tokenClient;
+
+  // Try silent token first
+  google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    prompt: '',
+    callback: onToken
+  }).requestAccessToken();
+}
+
+function onSignIn(resp) {
+  // After ID sign-in, request access token for Sheets
+  window._tokenClient.requestAccessToken();
+}
+
+function onToken(resp) {
+  if(resp.error) { showLogin(); return; }
+  accessToken = resp.access_token;
+  document.getElementById('auth-status').textContent = '✓ Connecté';
+  document.getElementById('btn-signout').style.display = 'inline-block';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  loadLocal();
+  render();
+  pullFromSheets();
+}
+
+function showLogin() {
+  document.getElementById('auth-status').textContent = '🔒 Non connecté';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-app').style.display = 'none';
+  // Show login button
+  google.accounts.id.prompt();
+}
+
+function signOut() {
+  google.accounts.id.disableAutoSelect();
+  accessToken = null;
+  document.getElementById('btn-signout').style.display = 'none';
+  showLogin();
+}
+
+// ── Sheets sync ───────────────────────────────────────────────────────────────
+async function sheetsRequest(method, path, body) {
+  const base = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID;
+  const res = await fetch(base + path, {
+    method,
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if(!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function setSyncStatus(state, msg) {
+  const el = document.getElementById('sync-status');
+  el.className = 'sync-status ' + state;
+  el.textContent = msg;
+}
+
+async function pullFromSheets() {
+  if(!accessToken) return;
+  try {
+    setSyncStatus('syncing','⏳ Synchronisation...');
+    const res = await sheetsRequest('GET', '/values/Données!A:E');
+    const rows = res.values || [];
+    // rows: [date, meal, name, pts, goal]
+    const newData = {};
+    rows.forEach(r => {
+      if(!r[0] || r[0]==='date') return; // skip header
+      const [date, meal, name, pts, goal] = r;
+      if(!newData[date]) newData[date] = { goal: parseInt(goal)||23, items: [] };
+      if(name) newData[date].items.push({ name, pts: parseFloat(pts)||0, meal, id: Date.now()+Math.random() });
+      if(goal) newData[date].goal = parseInt(goal)||23;
+    });
+    // Merge: remote wins for days not in local
+    Object.keys(newData).forEach(k => { if(!data[k]) data[k]=newData[k]; });
+    saveLocal();
+    render();
+    setSyncStatus('synced','✓ Synchronisé');
+  } catch(e) {
+    setSyncStatus('error','⚠ Erreur sync');
+    console.error(e);
+  }
+}
+
+async function pushToSheets() {
+  if(!accessToken) return;
+  try {
+    setSyncStatus('syncing','⏳ Sauvegarde...');
+    // Build rows
+    const rows = [['date','repas','aliment','points','objectif']];
+    Object.keys(data).sort().forEach(date => {
+      const dd = data[date];
+      if(dd.items.length === 0) {
+        rows.push([date,'','','',(dd.goal||23)]);
+      } else {
+        dd.items.forEach(item => {
+          rows.push([date, item.meal, item.name, item.pts, dd.goal||23]);
+        });
+      }
+    });
+    // Clear then write
+    await sheetsRequest('DELETE', '/values/Données!A:E:clear');
+    await sheetsRequest('PUT', '/values/Données!A1?valueInputOption=RAW', {
+      range: 'Données!A1',
+      majorDimension: 'ROWS',
+      values: rows
+    });
+    setSyncStatus('synced','✓ Sauvegardé');
+  } catch(e) {
+    // Sheet tab might not exist, try to create it
+    if(e.message && e.message.includes('Unable to parse range')) {
+      await createSheetTab();
+      await pushToSheets();
+    } else {
+      setSyncStatus('error','⚠ Erreur sauvegarde');
+      console.error(e);
+    }
+  }
+}
+
+async function createSheetTab() {
+  await fetch('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + ':batchUpdate', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requests: [{ addSheet: { properties: { title: 'Données' } } }] })
+  });
+}
+
+function schedulePush() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(pushToSheets, 1500);
+}
+
+// ── Data helpers ──────────────────────────────────────────────────────────────
+function day() {
+  if(!data[cur]) data[cur] = { goal: parseInt(document.getElementById('goal-inp').value)||23, items: [] };
+  return data[cur];
+}
+function changeDay(d) { const dt=fromKey(cur); dt.setDate(dt.getDate()+d); cur=toKey(dt); render(); }
+function updateGoal() { day().goal=parseInt(document.getElementById('goal-inp').value)||23; saveLocal(); schedulePush(); render(); }
+function addFood() {
+  const name=document.getElementById('f-name').value.trim();
+  const pts=parseFloat(document.getElementById('f-pts').value)||0;
+  const meal=document.getElementById('f-meal').value;
+  if(!name){ document.getElementById('f-name').focus(); return; }
+  day().items.push({name,pts,meal,id:Date.now()});
+  saveLocal(); schedulePush();
+  document.getElementById('f-name').value='';
+  document.getElementById('f-pts').value='2';
+  document.getElementById('f-name').focus();
+  render();
+}
+function addQuick(n,p) { const meal=document.getElementById('f-meal').value; day().items.push({name:n,pts:p,meal,id:Date.now()}); saveLocal(); schedulePush(); render(); }
+function deleteItem(id) { day().items=day().items.filter(i=>i.id!==id); saveLocal(); schedulePush(); render(); }
+function resetDay() { if(!confirm('Vider ce jour ?')) return; day().items=[]; saveLocal(); schedulePush(); render(); }
+function r1(v) { return Math.round(v*10)/10; }
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  const dd=day(), goal=dd.goal||23;
+  const used=dd.items.reduce((s,i)=>s+(i.pts||0),0);
+  const left=goal-used, pct=Math.min(1,used/goal);
+
+  document.getElementById('date-lbl').textContent=fmtDate(cur);
+  document.getElementById('goal-inp').value=goal;
+  document.getElementById('ring-n').textContent=r1(used);
+
+  const ring=document.getElementById('ring');
+  ring.style.strokeDashoffset=251.2*(1-pct);
+  ring.style.stroke=used>goal?'#e63946':used>=goal*.85?'#e07b22':'#40916c';
+
+  const lEl=document.getElementById('m-left');
+  lEl.textContent=r1(left);
+  lEl.className='stat-value'+(left<0?' danger':left<goal*.2?' warn':' ok');
+  document.getElementById('m-used').textContent=r1(used);
+
+  const qw=document.getElementById('qwrap'); qw.innerHTML='';
+  QUICK.forEach(f=>{
+    const b=document.createElement('button'); b.className='qbtn';
+    b.textContent=f.n+' ('+f.p+'pt'+(f.p>1?'s)':')');
+    b.onclick=()=>addQuick(f.n,f.p); qw.appendChild(b);
+  });
+
+  const mw=document.getElementById('meals-wrap'); mw.innerHTML='';
+  MEALS.forEach(meal=>{
+    const items=dd.items.filter(i=>i.meal===meal);
+    const mpts=items.reduce((s,i)=>s+(i.pts||0),0);
+    const mc=document.createElement('div'); mc.className='meal-card';
+    mc.innerHTML='<div class="meal-hdr"><div class="meal-hdr-l"><span class="meal-ico">'+MICO[meal]+'</span><span class="meal-nm">'+meal+'</span></div><span class="meal-badge">'+r1(mpts)+' pts</span></div><div class="meal-items">'
+      +(items.length===0?'<div class="empty-m">Rien ajouté</div>'
+        :items.map(i=>'<div class="food-row"><span class="food-nm">'+i.name+'</span><div class="food-r"><span class="pts-badge">'+r1(i.pts)+' pt'+(i.pts!==1?'s':'')+'</span><button class="del" onclick="deleteItem('+i.id+')" title="Supprimer">×</button></div></div>').join(''))
+      +'</div>';
+    mw.appendChild(mc);
+  });
+
+  const hw=document.getElementById('hist-wrap');
+  const keys=Object.keys(data).filter(k=>k!==cur).sort().reverse().slice(0,7);
+  if(!keys.length){ hw.innerHTML='<div style="font-size:13px;color:#aaa;font-style:italic;padding:4px 0">Aucun historique encore.</div>'; return; }
+  hw.innerHTML=keys.map(k=>{
+    const dd2=data[k], u=(dd2.items||[]).reduce((s,i)=>s+(i.pts||0),0), g=dd2.goal||23, ov=u>g;
+    return'<div class="hist-row"><span class="hist-date">'+fmtDate(k)+'</span><span class="hist-val '+(ov?'over':'ok')+'">'+r1(u)+' / '+g+' pts '+(ov?'⚠️':'✓')+'</span></div>';
+  }).join('');
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadLocal();
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.onload = initGoogleAuth;
+  document.head.appendChild(script);
+});
+</script>
+</body>
+</html>
