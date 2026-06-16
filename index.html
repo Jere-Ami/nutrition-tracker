@@ -30,20 +30,13 @@
 
   .content { max-width: 640px; margin: 0 auto; padding: 1.25rem 1rem; }
 
-  /* Login screen */
   .login-screen { text-align: center; padding: 3rem 1rem; }
   .login-screen h2 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
   .login-screen p { color: var(--muted); margin-bottom: 2rem; font-size: 15px; }
-  .btn-google {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: #fff; color: #333; border: 1px solid #ddd;
-    border-radius: 8px; padding: 12px 24px; font-size: 15px;
-    cursor: pointer; font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,.1);
-  }
+  .btn-google { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #333; border: 1px solid #ddd; border-radius: 8px; padding: 12px 24px; font-size: 15px; cursor: pointer; font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
   .btn-google:hover { box-shadow: 0 2px 8px rgba(0,0,0,.15); }
   .btn-google svg { width: 20px; height: 20px; }
 
-  /* Summary */
   .summary { display: flex; align-items: center; gap: 1.25rem; background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; }
   .summary-stats { flex: 1; display: flex; flex-direction: column; gap: 10px; }
   .stat { display: flex; align-items: center; justify-content: space-between; }
@@ -59,14 +52,32 @@
 
   .card { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
   .card-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
-  .add-grid { display: grid; grid-template-columns: 1fr 62px auto auto; gap: 8px; align-items: end; }
+
+  /* Search food */
+  .search-wrap { position: relative; margin-bottom: 10px; }
+  .search-wrap input { width: 100%; font-size: 15px; padding: 10px 14px; border: 1px solid var(--bdr); border-radius: var(--rs); background: var(--bg); color: var(--txt); }
+  .search-wrap input:focus { outline: 2px solid var(--gm); border-color: transparent; }
+  .search-status { font-size: 12px; color: var(--muted); margin-top: 5px; min-height: 18px; }
+  .autocomplete { position: absolute; top: 100%; left: 0; right: 0; background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--rs); box-shadow: 0 4px 16px rgba(0,0,0,.1); z-index: 100; max-height: 280px; overflow-y: auto; display: none; }
+  .autocomplete.open { display: block; }
+  .ac-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--bdr); display: flex; align-items: center; justify-content: space-between; }
+  .ac-item:last-child { border-bottom: none; }
+  .ac-item:hover, .ac-item.selected { background: var(--gl); }
+  .ac-name { font-size: 14px; color: var(--txt); }
+  .ac-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .ac-pts { font-size: 13px; font-weight: 600; color: var(--g); background: var(--gl); border-radius: 20px; padding: 2px 10px; white-space: nowrap; }
+  .ac-source { font-size: 10px; color: #aaa; margin-left: 4px; }
+
+  .add-row { display: grid; grid-template-columns: 80px auto auto; gap: 8px; align-items: end; margin-top: 10px; }
   .field { display: flex; flex-direction: column; gap: 4px; }
   .field label { font-size: 12px; color: var(--muted); }
   .field input, .field select { font-size: 14px; padding: 7px 9px; border: 1px solid var(--bdr); border-radius: var(--rs); background: var(--bg); color: var(--txt); width: 100%; }
   .field input:focus, .field select:focus { outline: 2px solid var(--gm); border-color: transparent; }
-  .btn-add { background: var(--g); color: #fff; border: none; border-radius: var(--rs); padding: 7px 14px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+  .btn-add { background: var(--g); color: #fff; border: none; border-radius: var(--rs); padding: 7px 16px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; align-self: end; }
   .btn-add:hover { background: var(--gm); }
-  .qwrap { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .qwrap { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .qwrap-label { font-size: 11px; color: var(--muted); width: 100%; margin-bottom: 2px; }
   .qbtn { background: var(--gl); border: 1px solid transparent; border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--g); cursor: pointer; }
   .qbtn:hover { border-color: var(--gm); }
 
@@ -100,8 +111,8 @@
   .hist-val.over { color: var(--red); }
 
   @media (max-width: 480px) {
-    .add-grid { grid-template-columns: 1fr 62px; }
-    .add-grid .btn-add { grid-column: 1 / -1; }
+    .add-row { grid-template-columns: 70px 1fr; }
+    .add-row .btn-add { grid-column: 1 / -1; }
     .summary { flex-direction: column; }
   }
 </style>
@@ -128,10 +139,9 @@
     <h2>Bienvenue 🌿</h2>
     <p>Connecte-toi avec Google pour synchroniser ton suivi sur tous tes appareils.</p>
     <button class="btn-google" onclick="startLogin()">
-      <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+      <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
       Continuer avec Google
     </button>
-    <p style="margin-top:1.5rem;font-size:12px;color:#aaa">Tes données sont stockées dans ton propre Google Sheet.</p>
   </div>
 
   <div id="main-app" style="display:none">
@@ -158,11 +168,21 @@
     </div>
 
     <div class="card">
-      <div class="card-title">Ajouter un aliment</div>
-      <div class="add-grid">
-        <div class="field"><label>Aliment</label><input type="text" id="f-name" placeholder="ex : yaourt nature" onkeydown="if(event.key==='Enter')addFood()"/></div>
-        <div class="field"><label>Points</label><input type="number" id="f-pts" min="0" max="99" value="2" onkeydown="if(event.key==='Enter')addFood()"/></div>
-        <div class="field"><label>Repas</label>
+      <div class="card-title">Rechercher un aliment</div>
+      <div class="search-wrap">
+        <input type="text" id="f-search" placeholder="Ex : crème fraîche, yaourt, poulet..." autocomplete="off"
+          oninput="onSearch()" onkeydown="onSearchKey(event)"/>
+        <div class="autocomplete" id="ac-list"></div>
+      </div>
+      <div class="search-status" id="search-status"></div>
+
+      <div class="add-row">
+        <div class="field">
+          <label>Points</label>
+          <input type="number" id="f-pts" min="0" max="99" value="" placeholder="auto"/>
+        </div>
+        <div class="field">
+          <label>Repas</label>
           <select id="f-meal">
             <option value="Petit-déjeuner">🌅 Matin</option>
             <option value="Déjeuner" selected>☀️ Midi</option>
@@ -172,7 +192,11 @@
         </div>
         <button class="btn-add" onclick="addFood()">+ Ajouter</button>
       </div>
-      <div class="qwrap" id="qwrap"></div>
+
+      <div class="qwrap">
+        <div class="qwrap-label">Raccourcis fréquents :</div>
+        <div id="qwrap-inner"></div>
+      </div>
     </div>
 
     <div class="meals" id="meals-wrap"></div>
@@ -192,21 +216,169 @@ const CLIENT_ID = '840111749240-4n2emeogkhpkrcb9r3nh5i2pct047klu.apps.googleuser
 const SHEET_ID  = '1UPduStuVMLMEZcIG6oeOaHlX_KeN0uD806oNQ_ckXuA';
 const SCOPE     = 'https://www.googleapis.com/auth/spreadsheets';
 
+// ── Base locale d'aliments (nom, pts/portion, portion en g, description) ─────
+const LOCAL_DB = [
+  // Produits laitiers
+  {n:'Yaourt nature 0%',p:0,g:125,d:'125g'},
+  {n:'Yaourt nature entier',p:2,g:125,d:'125g'},
+  {n:'Fromage blanc 0%',p:1,g:100,d:'100g'},
+  {n:'Fromage blanc 20%',p:2,g:100,d:'100g'},
+  {n:'Crème fraîche épaisse',p:3,g:30,d:'1 c.s. (30g)'},
+  {n:'Crème fraîche légère',p:2,g:30,d:'1 c.s. (30g)'},
+  {n:'Crème liquide entière',p:4,g:30,d:'1 c.s. (30g)'},
+  {n:'Lait entier',p:2,g:200,d:'1 verre (200ml)'},
+  {n:'Lait demi-écrémé',p:1,g:200,d:'1 verre (200ml)'},
+  {n:'Lait écrémé',p:1,g:200,d:'1 verre (200ml)'},
+  {n:'Beurre',p:3,g:10,d:'1 noix (10g)'},
+  {n:'Margarine',p:2,g:10,d:'1 noix (10g)'},
+  {n:'Emmental',p:3,g:30,d:'1 tranche (30g)'},
+  {n:'Camembert',p:3,g:30,d:'1 portion (30g)'},
+  {n:'Brie',p:3,g:30,d:'1 portion (30g)'},
+  {n:'Comté',p:3,g:30,d:'1 tranche (30g)'},
+  {n:'Mozzarella',p:3,g:50,d:'1 boule (50g)'},
+  {n:'Feta',p:2,g:30,d:'30g'},
+  {n:'Chèvre frais',p:2,g:30,d:'30g'},
+  {n:'Ricotta',p:2,g:50,d:'50g'},
+  // Viandes
+  {n:'Blanc de poulet',p:1,g:100,d:'100g'},
+  {n:'Cuisse de poulet',p:3,g:100,d:'100g'},
+  {n:'Blanc de dinde',p:1,g:100,d:'100g'},
+  {n:'Bœuf haché 5%',p:3,g:100,d:'100g'},
+  {n:'Bœuf haché 15%',p:5,g:100,d:'100g'},
+  {n:'Steak',p:4,g:150,d:'150g'},
+  {n:'Porc filet',p:3,g:100,d:'100g'},
+  {n:'Jambon blanc',p:1,g:50,d:'1 tranche (50g)'},
+  {n:'Jambon cru',p:2,g:30,d:'2 tranches (30g)'},
+  {n:'Bacon',p:3,g:30,d:'2 tranches (30g)'},
+  {n:'Saucisse de Francfort',p:4,g:60,d:'1 saucisse (60g)'},
+  {n:'Merguez',p:5,g:80,d:'1 merguez (80g)'},
+  {n:'Escalope de veau',p:2,g:100,d:'100g'},
+  {n:'Côtelette d\'agneau',p:5,g:100,d:'100g'},
+  // Poissons
+  {n:'Saumon',p:3,g:120,d:'1 pavé (120g)'},
+  {n:'Thon en boîte (eau)',p:1,g:80,d:'1/2 boîte (80g)'},
+  {n:'Thon en boîte (huile)',p:3,g:80,d:'1/2 boîte (80g)'},
+  {n:'Cabillaud',p:1,g:150,d:'1 filet (150g)'},
+  {n:'Sole',p:1,g:150,d:'1 filet (150g)'},
+  {n:'Sardines en boîte',p:3,g:80,d:'80g'},
+  {n:'Crevettes',p:1,g:100,d:'100g'},
+  {n:'Moules',p:2,g:150,d:'150g'},
+  {n:'Coquilles Saint-Jacques',p:2,g:100,d:'100g'},
+  // Œufs
+  {n:'Œuf entier',p:2,g:60,d:'1 œuf'},
+  {n:'Blanc d\'œuf',p:0,g:30,d:'1 blanc'},
+  {n:'Omelette (2 œufs)',p:4,g:120,d:'2 œufs'},
+  // Féculents
+  {n:'Pâtes cuites',p:5,g:150,d:'1 portion (150g)'},
+  {n:'Riz cuit',p:4,g:150,d:'1 portion (150g)'},
+  {n:'Pain blanc',p:3,g:50,d:'1 tranche (50g)'},
+  {n:'Pain complet',p:3,g:50,d:'1 tranche (50g)'},
+  {n:'Pain de mie',p:2,g:30,d:'1 tranche (30g)'},
+  {n:'Baguette',p:4,g:60,d:'1/4 baguette (60g)'},
+  {n:'Pomme de terre cuite',p:3,g:150,d:'1 moyenne (150g)'},
+  {n:'Pommes de terre vapeur',p:3,g:150,d:'150g'},
+  {n:'Frites',p:8,g:150,d:'portion (150g)'},
+  {n:'Quinoa cuit',p:4,g:150,d:'150g'},
+  {n:'Lentilles cuites',p:3,g:150,d:'150g'},
+  {n:'Pois chiches cuits',p:4,g:150,d:'150g'},
+  {n:'Haricots rouges',p:3,g:150,d:'150g'},
+  {n:'Flocons d\'avoine',p:4,g:50,d:'50g'},
+  {n:'Muesli',p:5,g:50,d:'50g'},
+  {n:'Corn flakes',p:4,g:40,d:'40g'},
+  {n:'Biscottes',p:2,g:20,d:'2 biscottes'},
+  {n:'Crackers',p:3,g:30,d:'3 crackers'},
+  // Fruits
+  {n:'Pomme',p:0,g:150,d:'1 pomme'},
+  {n:'Banane',p:0,g:120,d:'1 banane'},
+  {n:'Orange',p:0,g:150,d:'1 orange'},
+  {n:'Poire',p:0,g:150,d:'1 poire'},
+  {n:'Pêche',p:0,g:150,d:'1 pêche'},
+  {n:'Raisin',p:0,g:100,d:'1 grappe (100g)'},
+  {n:'Fraises',p:0,g:150,d:'150g'},
+  {n:'Framboises',p:0,g:100,d:'100g'},
+  {n:'Myrtilles',p:0,g:100,d:'100g'},
+  {n:'Ananas',p:0,g:100,d:'100g'},
+  {n:'Mangue',p:0,g:100,d:'100g'},
+  {n:'Melon',p:0,g:200,d:'1 tranche (200g)'},
+  {n:'Pastèque',p:0,g:200,d:'1 tranche (200g)'},
+  {n:'Kiwi',p:0,g:80,d:'1 kiwi'},
+  {n:'Citron (jus)',p:0,g:30,d:'1 c.s.'},
+  // Légumes (tous 0 pts sauf exceptions)
+  {n:'Salade verte',p:0,g:80,d:'1 assiette (80g)'},
+  {n:'Tomates',p:0,g:150,d:'2 tomates (150g)'},
+  {n:'Concombre',p:0,g:150,d:'1/2 concombre'},
+  {n:'Courgette',p:0,g:150,d:'150g'},
+  {n:'Brocoli',p:0,g:150,d:'150g'},
+  {n:'Épinards',p:0,g:100,d:'100g'},
+  {n:'Carottes',p:0,g:150,d:'150g'},
+  {n:'Haricots verts',p:0,g:150,d:'150g'},
+  {n:'Poivrons',p:0,g:150,d:'150g'},
+  {n:'Champignons',p:0,g:100,d:'100g'},
+  {n:'Oignon',p:0,g:80,d:'1 oignon'},
+  {n:'Ail',p:0,g:5,d:'1 gousse'},
+  {n:'Maïs en boîte',p:2,g:80,d:'80g'},
+  {n:'Petits pois',p:2,g:100,d:'100g'},
+  {n:'Avocat',p:5,g:100,d:'1/2 avocat (100g)'},
+  // Matières grasses
+  {n:'Huile d\'olive',p:3,g:10,d:'1 c.s. (10ml)'},
+  {n:'Huile de tournesol',p:3,g:10,d:'1 c.s. (10ml)'},
+  {n:'Vinaigrette',p:2,g:15,d:'1 c.s.'},
+  {n:'Mayonnaise',p:4,g:20,d:'1 c.s. (20g)'},
+  {n:'Ketchup',p:1,g:20,d:'1 c.s. (20g)'},
+  {n:'Moutarde',p:0,g:10,d:'1 c.c.'},
+  // Boissons
+  {n:'Eau',p:0,g:0,d:''},
+  {n:'Café noir',p:0,g:0,d:''},
+  {n:'Thé',p:0,g:0,d:''},
+  {n:'Jus d\'orange',p:3,g:200,d:'1 verre (200ml)'},
+  {n:'Jus de pomme',p:3,g:200,d:'1 verre (200ml)'},
+  {n:'Soda (cola)',p:4,g:330,d:'1 canette (330ml)'},
+  {n:'Soda light',p:0,g:330,d:'1 canette (330ml)'},
+  {n:'Verre de vin rouge',p:4,g:150,d:'1 verre (150ml)'},
+  {n:'Verre de vin blanc',p:4,g:150,d:'1 verre (150ml)'},
+  {n:'Bière (25cl)',p:3,g:250,d:'25cl'},
+  {n:'Champagne',p:3,g:120,d:'1 flûte (120ml)'},
+  {n:'Lait végétal soja',p:1,g:200,d:'1 verre (200ml)'},
+  {n:'Smoothie fruit',p:4,g:200,d:'1 verre (200ml)'},
+  // Snacks & sucreries
+  {n:'Carré de chocolat noir',p:2,g:15,d:'2 carrés (15g)'},
+  {n:'Barre chocolatée',p:7,g:50,d:'1 barre (50g)'},
+  {n:'Chips',p:7,g:40,d:'1 petite portion (40g)'},
+  {n:'Biscuit sec',p:2,g:15,d:'2 biscuits (15g)'},
+  {n:'Gâteau au chocolat',p:8,g:80,d:'1 part (80g)'},
+  {n:'Tarte aux pommes',p:6,g:100,d:'1 part (100g)'},
+  {n:'Glace vanille',p:5,g:100,d:'2 boules (100g)'},
+  {n:'Sorbet fruit',p:3,g:100,d:'2 boules (100g)'},
+  {n:'Miel',p:2,g:15,d:'1 c.s. (15g)'},
+  {n:'Confiture',p:2,g:20,d:'1 c.s. (20g)'},
+  {n:'Sucre',p:1,g:10,d:'1 c.c. (10g)'},
+  {n:'Nutella',p:5,g:20,d:'1 c.s. (20g)'},
+  // Plats courants
+  {n:'Pizza margherita',p:9,g:200,d:'2 parts (200g)'},
+  {n:'Quiche lorraine',p:8,g:150,d:'1 part (150g)'},
+  {n:'Soupe de légumes',p:1,g:250,d:'1 bol (250ml)'},
+  {n:'Soupe de poisson',p:3,g:250,d:'1 bol (250ml)'},
+  {n:'Ratatouille',p:2,g:200,d:'200g'},
+  {n:'Taboulé',p:5,g:150,d:'150g'},
+  {n:'Salade niçoise',p:6,g:300,d:'1 assiette'},
+  {n:'Sandwich jambon beurre',p:10,g:200,d:'1 sandwich'},
+];
+
 const MEALS = ['Petit-déjeuner','Déjeuner','Dîner','Collation'];
 const MICO  = {'Petit-déjeuner':'🌅','Déjeuner':'☀️','Dîner':'🌙','Collation':'🍎'};
-const QUICK = [
-  {n:'Yaourt 0%',p:0},{n:'Blanc poulet',p:1},{n:'Œuf',p:2},{n:'Pain complet',p:3},
-  {n:'Fromage blanc',p:1},{n:'Pomme',p:0},{n:'Banane',p:0},{n:'Pâtes 150g',p:5},
-  {n:'Riz 150g',p:4},{n:'Huile 1c.s.',p:3},{n:'Verre de vin',p:4},{n:'Saumon 120g',p:3},
-  {n:'Salade verte',p:0},{n:'Fromage 30g',p:3},{n:'Barre choc.',p:6}
-];
+const QUICK_NAMES = ['Yaourt nature 0%','Blanc de poulet','Œuf entier','Pain complet','Pomme','Banane','Pâtes cuites','Verre de vin rouge','Salade verte','Saumon'];
 
 let cur = todayKey();
 let data = {};
 let token = null;
 let syncTimer = null;
 let tokenClient = null;
+let selectedFood = null;
+let acIdx = -1;
+let acResults = [];
+let searchTimer = null;
 
+// ── Date helpers ───────────────────────────────────────────────────────────────
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 function fromKey(k){ const[y,m,d]=k.split('-'); return new Date(+y,+m-1,+d); }
 function toKey(d){ const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
@@ -217,42 +389,134 @@ function fmtDate(k){
   return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
 }
 
-function loadLocal(){ try{ data=JSON.parse(localStorage.getItem('nt_v2')||'{}'); }catch(e){ data={}; } }
-function saveLocal(){ try{ localStorage.setItem('nt_v2',JSON.stringify(data)); }catch(e){} }
+// ── Local storage ──────────────────────────────────────────────────────────────
+function loadLocal(){ try{ data=JSON.parse(localStorage.getItem('nt_v3')||'{}'); }catch(e){ data={}; } }
+function saveLocal(){ try{ localStorage.setItem('nt_v3',JSON.stringify(data)); }catch(e){} }
 
-// ── Auth ──────────────────────────────────────────────────────────────────────
-function startLogin(){
-  if(tokenClient){ tokenClient.requestAccessToken({prompt:'consent'}); }
+// ── Points WW (SmartPoints) ────────────────────────────────────────────────────
+function calcPoints(kcal, fat_sat, sugar, protein){
+  const pts = (kcal * 0.0305) + (fat_sat * 0.275) + (sugar * 0.12) - (protein * 0.098);
+  return Math.max(0, Math.round(pts));
 }
 
-function handleAuthBtn(){
-  if(token){ signOut(); } else { startLogin(); }
+// ── Recherche aliments ─────────────────────────────────────────────────────────
+function searchLocal(q){
+  const lq = q.toLowerCase().trim();
+  if(!lq) return [];
+  return LOCAL_DB.filter(f => f.n.toLowerCase().includes(lq)).slice(0,8).map(f=>({
+    name: f.n, pts: f.p, portion: f.d, source: 'local'
+  }));
 }
+
+async function searchOFF(q){
+  try {
+    setSearchStatus('🔍 Recherche sur Open Food Facts...');
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=10&lc=fr&cc=fr&fields=product_name,nutriments,quantity`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const products = (d.products||[]).filter(p=>p.product_name && p.nutriments);
+    return products.map(p=>{
+      const n = p.nutriments;
+      const kcal = n['energy-kcal_100g']||0;
+      const fat_sat = n['saturated-fat_100g']||0;
+      const sugar = n['sugars_100g']||0;
+      const protein = n['proteins_100g']||0;
+      const pts = calcPoints(kcal, fat_sat, sugar, protein);
+      const qty = p.quantity||'100g';
+      return { name: p.product_name, pts, portion: qty, source: 'OFF', kcal: Math.round(kcal) };
+    }).filter(p=>p.name.length>2).slice(0,8);
+  } catch(e) {
+    setSearchStatus('⚠ Open Food Facts indisponible');
+    return [];
+  }
+}
+
+function setSearchStatus(msg){ document.getElementById('search-status').textContent=msg; }
+
+async function onSearch(){
+  const q = document.getElementById('f-search').value.trim();
+  selectedFood = null;
+  document.getElementById('f-pts').value='';
+  if(q.length < 2){ closeAC(); setSearchStatus(''); return; }
+
+  // Local d'abord
+  const local = searchLocal(q);
+  if(local.length>0){
+    showAC(local);
+    setSearchStatus('');
+    // Cherche aussi OFF en arrière-plan
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(async()=>{
+      const off = await searchOFF(q);
+      const combined = [...local];
+      off.forEach(o=>{ if(!combined.find(c=>c.name.toLowerCase()===o.name.toLowerCase())) combined.push(o); });
+      showAC(combined.slice(0,12));
+      setSearchStatus('');
+    }, 600);
+  } else {
+    setSearchStatus('🔍 Recherche...');
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(async()=>{
+      const off = await searchOFF(q);
+      if(off.length>0){ showAC(off); setSearchStatus(''); }
+      else { closeAC(); setSearchStatus('Aucun résultat — saisis les points manuellement.'); }
+    }, 400);
+  }
+}
+
+function showAC(results){
+  acResults = results;
+  acIdx = -1;
+  const list = document.getElementById('ac-list');
+  list.innerHTML = results.map((r,i)=>`
+    <div class="ac-item" data-i="${i}" onmousedown="selectAC(${i})">
+      <div>
+        <div class="ac-name">${r.name}</div>
+        <div class="ac-sub">${r.portion||''}${r.kcal?' · '+r.kcal+' kcal':''}<span class="ac-source">${r.source==='OFF'?' · Open Food Facts':''}</span></div>
+      </div>
+      <span class="ac-pts">${r.pts} pt${r.pts!==1?'s':''}</span>
+    </div>`).join('');
+  list.classList.add('open');
+}
+
+function closeAC(){ document.getElementById('ac-list').classList.remove('open'); acResults=[]; acIdx=-1; }
+
+function selectAC(i){
+  const r = acResults[i];
+  if(!r) return;
+  selectedFood = r;
+  document.getElementById('f-search').value = r.name;
+  document.getElementById('f-pts').value = r.pts;
+  setSearchStatus('✓ '+r.name+(r.portion?' — '+r.portion:''));
+  closeAC();
+}
+
+function onSearchKey(e){
+  const list = document.getElementById('ac-list');
+  if(!list.classList.contains('open')) return;
+  const items = list.querySelectorAll('.ac-item');
+  if(e.key==='ArrowDown'){ e.preventDefault(); acIdx=Math.min(acIdx+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('selected',i===acIdx)); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); acIdx=Math.max(acIdx-1,0); items.forEach((el,i)=>el.classList.toggle('selected',i===acIdx)); }
+  else if(e.key==='Enter'){ e.preventDefault(); if(acIdx>=0) selectAC(acIdx); else if(acResults.length>0) selectAC(0); else addFood(); }
+  else if(e.key==='Escape'){ closeAC(); }
+}
+
+document.addEventListener('click', e=>{ if(!e.target.closest('.search-wrap')) closeAC(); });
+
+// ── Auth ───────────────────────────────────────────────────────────────────────
+function startLogin(){ if(tokenClient) tokenClient.requestAccessToken({prompt:'consent'}); }
+function handleAuthBtn(){ if(token) signOut(); else startLogin(); }
 
 function onGapiLoad(){
   tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPE,
-    callback: (resp) => {
-      if(resp.error){ setSyncSt('err','Erreur connexion'); return; }
-      token = resp.access_token;
-      onLoggedIn();
-    }
+    client_id: CLIENT_ID, scope: SCOPE,
+    callback: (resp)=>{ if(!resp.error){ token=resp.access_token; onLoggedIn(); } }
   });
-  // Try silent
   google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPE,
-    prompt: '',
-    callback: (resp) => {
-      if(!resp.error && resp.access_token){
-        token = resp.access_token;
-        onLoggedIn();
-      } else {
-        // Show login screen
-        document.getElementById('login-screen').style.display='block';
-        document.getElementById('main-app').style.display='none';
-      }
+    client_id: CLIENT_ID, scope: SCOPE, prompt: '',
+    callback: (resp)=>{
+      if(!resp.error && resp.access_token){ token=resp.access_token; onLoggedIn(); }
+      else { document.getElementById('login-screen').style.display='block'; }
     }
   }).requestAccessToken();
 }
@@ -266,7 +530,6 @@ function onLoggedIn(){
 }
 
 function signOut(){
-  google.accounts.id.disableAutoSelect();
   if(token) google.accounts.oauth2.revoke(token);
   token=null;
   document.getElementById('auth-status').textContent='Non connecté';
@@ -275,26 +538,25 @@ function signOut(){
   document.getElementById('main-app').style.display='none';
 }
 
-// ── Sheets ────────────────────────────────────────────────────────────────────
-async function sheetReq(method, path, body){
-  const r = await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+path,{
-    method, headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-    body: body?JSON.stringify(body):undefined
+// ── Sheets ─────────────────────────────────────────────────────────────────────
+async function sheetReq(method,path,body){
+  const r=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+path,{
+    method,headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body:body?JSON.stringify(body):undefined
   });
   if(!r.ok) throw new Error(await r.text());
   return r.json();
 }
-
 function setSyncSt(cls,msg){ const e=document.getElementById('sync-st'); e.className='sync-status '+cls; e.textContent=msg; }
 
 async function pullSheets(){
   try{
     setSyncSt('busy','⏳ Sync...');
-    const res = await sheetReq('GET','/values/Données!A:E');
-    const rows = (res.values||[]).slice(1); // skip header
-    const remote = {};
+    const res=await sheetReq('GET','/values/Données!A:E');
+    const rows=(res.values||[]).slice(1);
+    const remote={};
     rows.forEach(r=>{
-      const [date,meal,name,pts,goal]=r;
+      const[date,meal,name,pts,goal]=r;
       if(!date) return;
       if(!remote[date]) remote[date]={goal:parseInt(goal)||23,items:[]};
       if(name) remote[date].items.push({name,pts:parseFloat(pts)||0,meal,id:Date.now()+Math.random()});
@@ -302,10 +564,9 @@ async function pullSheets(){
     Object.keys(remote).forEach(k=>{ if(!data[k]) data[k]=remote[k]; });
     saveLocal(); render();
     setSyncSt('ok','✓ Synchronisé');
-  } catch(e){
-    if(e.message&&e.message.includes('Unable to parse range')){
-      await createTab(); await pullSheets();
-    } else { setSyncSt('err','⚠ Erreur sync'); }
+  }catch(e){
+    if(e.message&&e.message.includes('Unable to parse range')){ await createTab(); }
+    else setSyncSt('err','⚠ Erreur sync');
   }
 }
 
@@ -316,13 +577,13 @@ async function pushSheets(){
     const rows=[['date','repas','aliment','points','objectif']];
     Object.keys(data).sort().forEach(date=>{
       const dd=data[date];
-      if(!dd.items.length){ rows.push([date,'','','',dd.goal||23]); }
+      if(!dd.items.length) rows.push([date,'','','',dd.goal||23]);
       else dd.items.forEach(i=>rows.push([date,i.meal,i.name,i.pts,dd.goal||23]));
     });
     await sheetReq('POST','/values/Données!A1:E:clear');
     await sheetReq('PUT','/values/Données!A1?valueInputOption=RAW',{range:'Données!A1',majorDimension:'ROWS',values:rows});
-    setSyncSt('ok','✓ Sauvegardé');
-  } catch(e){ setSyncSt('err','⚠ Erreur sauvegarde'); console.error(e); }
+    setSyncSt('ok','✓ Sauvegardé ✓');
+  }catch(e){ setSyncSt('err','⚠ Erreur'); }
 }
 
 async function createTab(){
@@ -332,38 +593,47 @@ async function createTab(){
     body:JSON.stringify({requests:[{addSheet:{properties:{title:'Données'}}}]})
   });
 }
-
 function schedulePush(){ clearTimeout(syncTimer); syncTimer=setTimeout(pushSheets,1500); }
 
-// ── Data ──────────────────────────────────────────────────────────────────────
+// ── Data ───────────────────────────────────────────────────────────────────────
 function day(){
   if(!data[cur]) data[cur]={goal:parseInt(document.getElementById('goal-inp').value)||23,items:[]};
   return data[cur];
 }
 function changeDay(d){ const dt=fromKey(cur); dt.setDate(dt.getDate()+d); cur=toKey(dt); render(); }
 function updateGoal(){ day().goal=parseInt(document.getElementById('goal-inp').value)||23; saveLocal(); schedulePush(); render(); }
+
 function addFood(){
-  const name=document.getElementById('f-name').value.trim();
-  const pts=parseFloat(document.getElementById('f-pts').value)||0;
+  const name=document.getElementById('f-search').value.trim();
+  const pts=parseFloat(document.getElementById('f-pts').value);
   const meal=document.getElementById('f-meal').value;
-  if(!name){ document.getElementById('f-name').focus(); return; }
+  if(!name){ document.getElementById('f-search').focus(); return; }
+  if(isNaN(pts)){ document.getElementById('f-pts').focus(); setSearchStatus('⚠ Saisis les points manuellement'); return; }
   day().items.push({name,pts,meal,id:Date.now()});
   saveLocal(); schedulePush();
-  document.getElementById('f-name').value='';
-  document.getElementById('f-pts').value='2';
-  document.getElementById('f-name').focus();
+  document.getElementById('f-search').value='';
+  document.getElementById('f-pts').value='';
+  setSearchStatus('');
+  selectedFood=null;
+  document.getElementById('f-search').focus();
   render();
 }
-function addQuick(n,p){ const meal=document.getElementById('f-meal').value; day().items.push({name:n,pts:p,meal,id:Date.now()}); saveLocal(); schedulePush(); render(); }
+
+function addQuick(name,pts){
+  const meal=document.getElementById('f-meal').value;
+  day().items.push({name,pts,meal,id:Date.now()});
+  saveLocal(); schedulePush(); render();
+}
+
 function deleteItem(id){ day().items=day().items.filter(i=>i.id!==id); saveLocal(); schedulePush(); render(); }
 function resetDay(){ if(!confirm('Vider ce jour ?')) return; day().items=[]; saveLocal(); schedulePush(); render(); }
 function r1(v){ return Math.round(v*10)/10; }
 
-// ── Render ────────────────────────────────────────────────────────────────────
+// ── Render ─────────────────────────────────────────────────────────────────────
 function render(){
-  const dd=day(), goal=dd.goal||23;
+  const dd=day(),goal=dd.goal||23;
   const used=dd.items.reduce((s,i)=>s+(i.pts||0),0);
-  const left=goal-used, pct=Math.min(1,used/goal);
+  const left=goal-used,pct=Math.min(1,used/goal);
 
   document.getElementById('date-lbl').textContent=fmtDate(cur);
   document.getElementById('goal-inp').value=goal;
@@ -378,11 +648,14 @@ function render(){
   lEl.className='stat-value'+(left<0?' danger':left<goal*.2?' warn':' ok');
   document.getElementById('m-used').textContent=r1(used);
 
-  const qw=document.getElementById('qwrap'); qw.innerHTML='';
-  QUICK.forEach(f=>{
+  // Raccourcis
+  const qw=document.getElementById('qwrap-inner'); qw.innerHTML='';
+  QUICK_NAMES.forEach(name=>{
+    const food=LOCAL_DB.find(f=>f.n===name);
+    if(!food) return;
     const b=document.createElement('button'); b.className='qbtn';
-    b.textContent=f.n+' ('+f.p+'pt'+(f.p>1?'s)':')');
-    b.onclick=()=>addQuick(f.n,f.p); qw.appendChild(b);
+    b.textContent=food.n+' ('+food.p+'pt'+(food.p!==1?'s)':')');
+    b.onclick=()=>addQuick(food.n,food.p); qw.appendChild(b);
   });
 
   const mw=document.getElementById('meals-wrap'); mw.innerHTML='';
@@ -401,19 +674,18 @@ function render(){
   const keys=Object.keys(data).filter(k=>k!==cur).sort().reverse().slice(0,7);
   if(!keys.length){ hw.innerHTML='<div style="font-size:13px;color:#aaa;padding:4px 0;font-style:italic">Aucun historique encore.</div>'; return; }
   hw.innerHTML=keys.map(k=>{
-    const dd2=data[k], u=(dd2.items||[]).reduce((s,i)=>s+(i.pts||0),0), g=dd2.goal||23, ov=u>g;
+    const dd2=data[k],u=(dd2.items||[]).reduce((s,i)=>s+(i.pts||0),0),g=dd2.goal||23,ov=u>g;
     return'<div class="hist-row"><span class="hist-date">'+fmtDate(k)+'</span><span class="hist-val '+(ov?'over':'ok')+'">'+r1(u)+' / '+g+' pts '+(ov?'⚠️':'✓')+'</span></div>';
   }).join('');
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
+// ── Boot ───────────────────────────────────────────────────────────────────────
 loadLocal();
 document.getElementById('date-lbl').textContent=fmtDate(cur);
-
-const gsiScript=document.createElement('script');
-gsiScript.src='https://accounts.google.com/gsi/client';
-gsiScript.onload=onGapiLoad;
-document.head.appendChild(gsiScript);
+const gsi=document.createElement('script');
+gsi.src='https://accounts.google.com/gsi/client';
+gsi.onload=onGapiLoad;
+document.head.appendChild(gsi);
 </script>
 </body>
 </html>
