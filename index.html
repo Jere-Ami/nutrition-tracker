@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌿 Nutrition Tracker</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root {
     --g: #2d6a4f; --gm: #40916c; --gl: #d8f3dc;
@@ -16,21 +16,34 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--txt); min-height: 100vh; padding-bottom: 80px; }
 
-  .app-header { background: var(--g); color: #fff; padding: 1.25rem 1.5rem 1rem; position: sticky; top: 0; z-index: 10; }
+  .app-header { background: var(--g); color: #fff; padding: 1.25rem 1.5rem 1rem; }
   .app-header h1 { font-size: 18px; font-weight: 600; }
   .app-header p { font-size: 12px; opacity: .7; margin-top: 2px; }
   .date-nav { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
   .date-nav button { background: rgba(255,255,255,.2); border: none; border-radius: 6px; color: #fff; padding: 4px 12px; cursor: pointer; font-size: 16px; }
   .date-nav button:hover { background: rgba(255,255,255,.3); }
   .date-lbl { font-size: 14px; font-weight: 500; flex: 1; text-align: center; }
-
-  .auth-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,.15); border-radius: 8px; padding: 6px 12px; margin-top: 10px; }
+  .auth-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,.15); border-radius: 8px; padding: 8px 12px; margin-top: 10px; }
   .auth-status { font-size: 12px; }
-  .btn-signout { background: rgba(255,255,255,.2); border: none; border-radius: 6px; color: #fff; padding: 3px 10px; font-size: 12px; cursor: pointer; }
-  .btn-signout:hover { background: rgba(255,255,255,.3); }
+  .btn-small { background: rgba(255,255,255,.25); border: none; border-radius: 6px; color: #fff; padding: 5px 12px; font-size: 12px; cursor: pointer; font-weight: 500; }
+  .btn-small:hover { background: rgba(255,255,255,.35); }
 
   .content { max-width: 640px; margin: 0 auto; padding: 1.25rem 1rem; }
 
+  /* Login screen */
+  .login-screen { text-align: center; padding: 3rem 1rem; }
+  .login-screen h2 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  .login-screen p { color: var(--muted); margin-bottom: 2rem; font-size: 15px; }
+  .btn-google {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff; color: #333; border: 1px solid #ddd;
+    border-radius: 8px; padding: 12px 24px; font-size: 15px;
+    cursor: pointer; font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+  .btn-google:hover { box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .btn-google svg { width: 20px; height: 20px; }
+
+  /* Summary */
   .summary { display: flex; align-items: center; gap: 1.25rem; background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; }
   .summary-stats { flex: 1; display: flex; flex-direction: column; gap: 10px; }
   .stat { display: flex; align-items: center; justify-content: space-between; }
@@ -51,9 +64,8 @@
   .field label { font-size: 12px; color: var(--muted); }
   .field input, .field select { font-size: 14px; padding: 7px 9px; border: 1px solid var(--bdr); border-radius: var(--rs); background: var(--bg); color: var(--txt); width: 100%; }
   .field input:focus, .field select:focus { outline: 2px solid var(--gm); border-color: transparent; }
-  .btn-add { background: var(--g); color: #fff; border: none; border-radius: var(--rs); padding: 7px 14px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; align-self: end; }
+  .btn-add { background: var(--g); color: #fff; border: none; border-radius: var(--rs); padding: 7px 14px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
   .btn-add:hover { background: var(--gm); }
-  .btn-add:active { transform: scale(.98); }
   .qwrap { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
   .qbtn { background: var(--gl); border: 1px solid transparent; border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--g); cursor: pointer; }
   .qbtn:hover { border-color: var(--gm); }
@@ -62,15 +74,13 @@
   .meal-card { background: var(--surf); border: 1px solid var(--bdr); border-radius: var(--r); overflow: hidden; }
   .meal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid var(--bdr); background: #fafaf8; }
   .meal-hdr-l { display: flex; align-items: center; gap: 7px; }
-  .meal-ico { font-size: 16px; }
   .meal-nm { font-size: 14px; font-weight: 600; }
   .meal-badge { font-size: 12px; background: var(--gl); color: var(--g); border-radius: 20px; padding: 2px 9px; font-weight: 500; }
   .food-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-bottom: 1px solid var(--bdr); }
   .food-row:last-child { border-bottom: none; }
-  .food-nm { font-size: 14px; }
   .food-r { display: flex; align-items: center; gap: 7px; }
   .pts-badge { font-size: 12px; background: #eef2ff; color: #3730a3; border-radius: 20px; padding: 2px 9px; }
-  .del { background: none; border: none; cursor: pointer; color: #bbb; font-size: 18px; line-height: 1; border-radius: 6px; padding: 1px 5px; }
+  .del { background: none; border: none; cursor: pointer; color: #bbb; font-size: 18px; border-radius: 6px; padding: 1px 5px; }
   .del:hover { background: #fde8e8; color: var(--red); }
   .empty-m { padding: 9px 14px; font-size: 13px; color: #aaa; font-style: italic; }
 
@@ -78,9 +88,9 @@
   .btn-ghost { background: none; border: 1px solid var(--bdr); border-radius: var(--rs); padding: 5px 12px; font-size: 12px; color: var(--muted); cursor: pointer; }
   .btn-ghost:hover { background: #fde8e8; border-color: #f9a8a8; color: var(--red); }
   .sync-status { font-size: 12px; color: var(--muted); }
-  .sync-status.syncing { color: var(--warn); }
-  .sync-status.synced { color: var(--gm); }
-  .sync-status.error { color: var(--red); }
+  .sync-status.ok { color: var(--gm); }
+  .sync-status.err { color: var(--red); }
+  .sync-status.busy { color: var(--warn); }
 
   .hist-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--bdr); font-size: 13px; }
   .hist-row:last-child { border-bottom: none; }
@@ -88,10 +98,6 @@
   .hist-val { font-weight: 600; }
   .hist-val.ok { color: var(--gm); }
   .hist-val.over { color: var(--red); }
-
-  .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; padding: 2rem; }
-  .login-screen h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-  .login-screen p { font-size: 14px; color: var(--muted); margin-bottom: 2rem; max-width: 320px; }
 
   @media (max-width: 480px) {
     .add-grid { grid-template-columns: 1fr 62px; }
@@ -107,26 +113,31 @@
   <p>Suivi points — synchronisé sur tous tes appareils</p>
   <div class="date-nav">
     <button onclick="changeDay(-1)">‹</button>
-    <span class="date-lbl" id="date-lbl">Chargement...</span>
+    <span class="date-lbl" id="date-lbl">—</span>
     <button onclick="changeDay(1)">›</button>
   </div>
   <div class="auth-bar">
-    <span class="auth-status" id="auth-status">⏳ Connexion...</span>
-    <button class="btn-signout" id="btn-signout" onclick="signOut()" style="display:none">Déconnexion</button>
+    <span class="auth-status" id="auth-status">Non connecté</span>
+    <button class="btn-small" id="auth-btn" onclick="handleAuthBtn()">Se connecter</button>
   </div>
 </div>
 
 <div class="content">
-  <div id="login-screen" class="login-screen" style="display:none">
-    <h2>Connecte-toi pour commencer</h2>
-    <p>Tes données seront synchronisées sur tous tes appareils via Google Sheets.</p>
-    <div id="g-signin-btn"></div>
+
+  <div id="login-screen" class="login-screen">
+    <h2>Bienvenue 🌿</h2>
+    <p>Connecte-toi avec Google pour synchroniser ton suivi sur tous tes appareils.</p>
+    <button class="btn-google" onclick="startLogin()">
+      <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+      Continuer avec Google
+    </button>
+    <p style="margin-top:1.5rem;font-size:12px;color:#aaa">Tes données sont stockées dans ton propre Google Sheet.</p>
   </div>
 
   <div id="main-app" style="display:none">
     <div class="summary">
       <div>
-        <svg width="96" height="96" viewBox="0 0 100 100" aria-hidden="true">
+        <svg width="90" height="90" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7df" stroke-width="10"/>
           <circle cx="50" cy="50" r="40" fill="none" stroke="#40916c" stroke-width="10"
             stroke-dasharray="251.2" stroke-dashoffset="251.2"
@@ -168,7 +179,7 @@
 
     <div class="footer-row">
       <button class="btn-ghost" onclick="resetDay()">🗑 Vider ce jour</button>
-      <span class="sync-status" id="sync-status"></span>
+      <span class="sync-status" id="sync-st"></span>
     </div>
 
     <div class="card-title" style="margin-bottom:8px">Historique (7 derniers jours)</div>
@@ -179,7 +190,7 @@
 <script>
 const CLIENT_ID = '840111749240-4n2emeogkhpkrcb9r3nh5i2pct047klu.apps.googleusercontent.com';
 const SHEET_ID  = '1UPduStuVMLMEZcIG6oeOaHlX_KeN0uD806oNQ_ckXuA';
-const SCOPES    = 'https://www.googleapis.com/auth/spreadsheets';
+const SCOPE     = 'https://www.googleapis.com/auth/spreadsheets';
 
 const MEALS = ['Petit-déjeuner','Déjeuner','Dîner','Collation'];
 const MICO  = {'Petit-déjeuner':'🌅','Déjeuner':'☀️','Dîner':'🌙','Collation':'🍎'};
@@ -192,187 +203,146 @@ const QUICK = [
 
 let cur = todayKey();
 let data = {};
-let accessToken = null;
+let token = null;
 let syncTimer = null;
+let tokenClient = null;
 
-// ── Date helpers ──────────────────────────────────────────────────────────────
-function todayKey() { return new Date().toISOString().slice(0,10); }
-function fromKey(k) { const [y,m,d]=k.split('-'); return new Date(+y,+m-1,+d); }
-function toKey(d)   { const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
-function fmtDate(k) {
-  const d=fromKey(k), t=todayKey(), y=toKey(new Date(Date.now()-86400000));
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function fromKey(k){ const[y,m,d]=k.split('-'); return new Date(+y,+m-1,+d); }
+function toKey(d){ const p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function fmtDate(k){
+  const d=fromKey(k),t=todayKey(),y=toKey(new Date(Date.now()-86400000));
   if(k===t) return "Aujourd'hui";
   if(k===y) return 'Hier';
   return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
 }
 
-// ── Local storage ─────────────────────────────────────────────────────────────
-function loadLocal()  { try { data=JSON.parse(localStorage.getItem('nt_data')||'{}'); } catch(e) { data={}; } }
-function saveLocal()  { try { localStorage.setItem('nt_data',JSON.stringify(data)); } catch(e) {} }
+function loadLocal(){ try{ data=JSON.parse(localStorage.getItem('nt_v2')||'{}'); }catch(e){ data={}; } }
+function saveLocal(){ try{ localStorage.setItem('nt_v2',JSON.stringify(data)); }catch(e){} }
 
-// ── Google auth ───────────────────────────────────────────────────────────────
-function initGoogleAuth() {
-  google.accounts.id.initialize({
+// ── Auth ──────────────────────────────────────────────────────────────────────
+function startLogin(){
+  if(tokenClient){ tokenClient.requestAccessToken({prompt:'consent'}); }
+}
+
+function handleAuthBtn(){
+  if(token){ signOut(); } else { startLogin(); }
+}
+
+function onGapiLoad(){
+  tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
-    callback: onSignIn,
-    auto_select: true
+    scope: SCOPE,
+    callback: (resp) => {
+      if(resp.error){ setSyncSt('err','Erreur connexion'); return; }
+      token = resp.access_token;
+      onLoggedIn();
+    }
   });
-  google.accounts.id.renderButton(document.getElementById('g-signin-btn'), {
-    theme: 'outline', size: 'large', text: 'signin_with', locale: 'fr'
-  });
-
-  const tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: onToken
-  });
-  window._tokenClient = tokenClient;
-
-  // Try silent token first
+  // Try silent
   google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
-    scope: SCOPES,
+    scope: SCOPE,
     prompt: '',
-    callback: onToken
+    callback: (resp) => {
+      if(!resp.error && resp.access_token){
+        token = resp.access_token;
+        onLoggedIn();
+      } else {
+        // Show login screen
+        document.getElementById('login-screen').style.display='block';
+        document.getElementById('main-app').style.display='none';
+      }
+    }
   }).requestAccessToken();
 }
 
-function onSignIn(resp) {
-  // After ID sign-in, request access token for Sheets
-  window._tokenClient.requestAccessToken();
+function onLoggedIn(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='block';
+  document.getElementById('auth-status').textContent='✓ Connecté';
+  document.getElementById('auth-btn').textContent='Déconnexion';
+  loadLocal(); render(); pullSheets();
 }
 
-function onToken(resp) {
-  if(resp.error) { showLogin(); return; }
-  accessToken = resp.access_token;
-  document.getElementById('auth-status').textContent = '✓ Connecté';
-  document.getElementById('btn-signout').style.display = 'inline-block';
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('main-app').style.display = 'block';
-  loadLocal();
-  render();
-  pullFromSheets();
-}
-
-function showLogin() {
-  document.getElementById('auth-status').textContent = '🔒 Non connecté';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('main-app').style.display = 'none';
-  // Show login button
-  google.accounts.id.prompt();
-}
-
-function signOut() {
+function signOut(){
   google.accounts.id.disableAutoSelect();
-  accessToken = null;
-  document.getElementById('btn-signout').style.display = 'none';
-  showLogin();
+  if(token) google.accounts.oauth2.revoke(token);
+  token=null;
+  document.getElementById('auth-status').textContent='Non connecté';
+  document.getElementById('auth-btn').textContent='Se connecter';
+  document.getElementById('login-screen').style.display='block';
+  document.getElementById('main-app').style.display='none';
 }
 
-// ── Sheets sync ───────────────────────────────────────────────────────────────
-async function sheetsRequest(method, path, body) {
-  const base = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID;
-  const res = await fetch(base + path, {
-    method,
-    headers: {
-      'Authorization': 'Bearer ' + accessToken,
-      'Content-Type': 'application/json'
-    },
-    body: body ? JSON.stringify(body) : undefined
+// ── Sheets ────────────────────────────────────────────────────────────────────
+async function sheetReq(method, path, body){
+  const r = await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+path,{
+    method, headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body: body?JSON.stringify(body):undefined
   });
-  if(!res.ok) throw new Error(await res.text());
-  return res.json();
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
 }
 
-function setSyncStatus(state, msg) {
-  const el = document.getElementById('sync-status');
-  el.className = 'sync-status ' + state;
-  el.textContent = msg;
-}
+function setSyncSt(cls,msg){ const e=document.getElementById('sync-st'); e.className='sync-status '+cls; e.textContent=msg; }
 
-async function pullFromSheets() {
-  if(!accessToken) return;
-  try {
-    setSyncStatus('syncing','⏳ Synchronisation...');
-    const res = await sheetsRequest('GET', '/values/Données!A:E');
-    const rows = res.values || [];
-    // rows: [date, meal, name, pts, goal]
-    const newData = {};
-    rows.forEach(r => {
-      if(!r[0] || r[0]==='date') return; // skip header
-      const [date, meal, name, pts, goal] = r;
-      if(!newData[date]) newData[date] = { goal: parseInt(goal)||23, items: [] };
-      if(name) newData[date].items.push({ name, pts: parseFloat(pts)||0, meal, id: Date.now()+Math.random() });
-      if(goal) newData[date].goal = parseInt(goal)||23;
+async function pullSheets(){
+  try{
+    setSyncSt('busy','⏳ Sync...');
+    const res = await sheetReq('GET','/values/Données!A:E');
+    const rows = (res.values||[]).slice(1); // skip header
+    const remote = {};
+    rows.forEach(r=>{
+      const [date,meal,name,pts,goal]=r;
+      if(!date) return;
+      if(!remote[date]) remote[date]={goal:parseInt(goal)||23,items:[]};
+      if(name) remote[date].items.push({name,pts:parseFloat(pts)||0,meal,id:Date.now()+Math.random()});
     });
-    // Merge: remote wins for days not in local
-    Object.keys(newData).forEach(k => { if(!data[k]) data[k]=newData[k]; });
-    saveLocal();
-    render();
-    setSyncStatus('synced','✓ Synchronisé');
-  } catch(e) {
-    setSyncStatus('error','⚠ Erreur sync');
-    console.error(e);
+    Object.keys(remote).forEach(k=>{ if(!data[k]) data[k]=remote[k]; });
+    saveLocal(); render();
+    setSyncSt('ok','✓ Synchronisé');
+  } catch(e){
+    if(e.message&&e.message.includes('Unable to parse range')){
+      await createTab(); await pullSheets();
+    } else { setSyncSt('err','⚠ Erreur sync'); }
   }
 }
 
-async function pushToSheets() {
-  if(!accessToken) return;
-  try {
-    setSyncStatus('syncing','⏳ Sauvegarde...');
-    // Build rows
-    const rows = [['date','repas','aliment','points','objectif']];
-    Object.keys(data).sort().forEach(date => {
-      const dd = data[date];
-      if(dd.items.length === 0) {
-        rows.push([date,'','','',(dd.goal||23)]);
-      } else {
-        dd.items.forEach(item => {
-          rows.push([date, item.meal, item.name, item.pts, dd.goal||23]);
-        });
-      }
+async function pushSheets(){
+  if(!token) return;
+  try{
+    setSyncSt('busy','⏳ Sauvegarde...');
+    const rows=[['date','repas','aliment','points','objectif']];
+    Object.keys(data).sort().forEach(date=>{
+      const dd=data[date];
+      if(!dd.items.length){ rows.push([date,'','','',dd.goal||23]); }
+      else dd.items.forEach(i=>rows.push([date,i.meal,i.name,i.pts,dd.goal||23]));
     });
-    // Clear then write
-    await sheetsRequest('DELETE', '/values/Données!A:E:clear');
-    await sheetsRequest('PUT', '/values/Données!A1?valueInputOption=RAW', {
-      range: 'Données!A1',
-      majorDimension: 'ROWS',
-      values: rows
-    });
-    setSyncStatus('synced','✓ Sauvegardé');
-  } catch(e) {
-    // Sheet tab might not exist, try to create it
-    if(e.message && e.message.includes('Unable to parse range')) {
-      await createSheetTab();
-      await pushToSheets();
-    } else {
-      setSyncStatus('error','⚠ Erreur sauvegarde');
-      console.error(e);
-    }
-  }
+    await sheetReq('POST','/values/Données!A1:E:clear');
+    await sheetReq('PUT','/values/Données!A1?valueInputOption=RAW',{range:'Données!A1',majorDimension:'ROWS',values:rows});
+    setSyncSt('ok','✓ Sauvegardé');
+  } catch(e){ setSyncSt('err','⚠ Erreur sauvegarde'); console.error(e); }
 }
 
-async function createSheetTab() {
-  await fetch('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + ':batchUpdate', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ requests: [{ addSheet: { properties: { title: 'Données' } } }] })
+async function createTab(){
+  await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+':batchUpdate',{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({requests:[{addSheet:{properties:{title:'Données'}}}]})
   });
 }
 
-function schedulePush() {
-  clearTimeout(syncTimer);
-  syncTimer = setTimeout(pushToSheets, 1500);
-}
+function schedulePush(){ clearTimeout(syncTimer); syncTimer=setTimeout(pushSheets,1500); }
 
-// ── Data helpers ──────────────────────────────────────────────────────────────
-function day() {
-  if(!data[cur]) data[cur] = { goal: parseInt(document.getElementById('goal-inp').value)||23, items: [] };
+// ── Data ──────────────────────────────────────────────────────────────────────
+function day(){
+  if(!data[cur]) data[cur]={goal:parseInt(document.getElementById('goal-inp').value)||23,items:[]};
   return data[cur];
 }
-function changeDay(d) { const dt=fromKey(cur); dt.setDate(dt.getDate()+d); cur=toKey(dt); render(); }
-function updateGoal() { day().goal=parseInt(document.getElementById('goal-inp').value)||23; saveLocal(); schedulePush(); render(); }
-function addFood() {
+function changeDay(d){ const dt=fromKey(cur); dt.setDate(dt.getDate()+d); cur=toKey(dt); render(); }
+function updateGoal(){ day().goal=parseInt(document.getElementById('goal-inp').value)||23; saveLocal(); schedulePush(); render(); }
+function addFood(){
   const name=document.getElementById('f-name').value.trim();
   const pts=parseFloat(document.getElementById('f-pts').value)||0;
   const meal=document.getElementById('f-meal').value;
@@ -384,13 +354,13 @@ function addFood() {
   document.getElementById('f-name').focus();
   render();
 }
-function addQuick(n,p) { const meal=document.getElementById('f-meal').value; day().items.push({name:n,pts:p,meal,id:Date.now()}); saveLocal(); schedulePush(); render(); }
-function deleteItem(id) { day().items=day().items.filter(i=>i.id!==id); saveLocal(); schedulePush(); render(); }
-function resetDay() { if(!confirm('Vider ce jour ?')) return; day().items=[]; saveLocal(); schedulePush(); render(); }
-function r1(v) { return Math.round(v*10)/10; }
+function addQuick(n,p){ const meal=document.getElementById('f-meal').value; day().items.push({name:n,pts:p,meal,id:Date.now()}); saveLocal(); schedulePush(); render(); }
+function deleteItem(id){ day().items=day().items.filter(i=>i.id!==id); saveLocal(); schedulePush(); render(); }
+function resetDay(){ if(!confirm('Vider ce jour ?')) return; day().items=[]; saveLocal(); schedulePush(); render(); }
+function r1(v){ return Math.round(v*10)/10; }
 
 // ── Render ────────────────────────────────────────────────────────────────────
-function render() {
+function render(){
   const dd=day(), goal=dd.goal||23;
   const used=dd.items.reduce((s,i)=>s+(i.pts||0),0);
   const left=goal-used, pct=Math.min(1,used/goal);
@@ -420,16 +390,16 @@ function render() {
     const items=dd.items.filter(i=>i.meal===meal);
     const mpts=items.reduce((s,i)=>s+(i.pts||0),0);
     const mc=document.createElement('div'); mc.className='meal-card';
-    mc.innerHTML='<div class="meal-hdr"><div class="meal-hdr-l"><span class="meal-ico">'+MICO[meal]+'</span><span class="meal-nm">'+meal+'</span></div><span class="meal-badge">'+r1(mpts)+' pts</span></div><div class="meal-items">'
+    mc.innerHTML='<div class="meal-hdr"><div class="meal-hdr-l"><span>'+MICO[meal]+'</span><span class="meal-nm">'+meal+'</span></div><span class="meal-badge">'+r1(mpts)+' pts</span></div><div>'
       +(items.length===0?'<div class="empty-m">Rien ajouté</div>'
-        :items.map(i=>'<div class="food-row"><span class="food-nm">'+i.name+'</span><div class="food-r"><span class="pts-badge">'+r1(i.pts)+' pt'+(i.pts!==1?'s':'')+'</span><button class="del" onclick="deleteItem('+i.id+')" title="Supprimer">×</button></div></div>').join(''))
+        :items.map(i=>'<div class="food-row"><span>'+i.name+'</span><div class="food-r"><span class="pts-badge">'+r1(i.pts)+' pt'+(i.pts!==1?'s':'')+'</span><button class="del" onclick="deleteItem('+i.id+')">×</button></div></div>').join(''))
       +'</div>';
     mw.appendChild(mc);
   });
 
   const hw=document.getElementById('hist-wrap');
   const keys=Object.keys(data).filter(k=>k!==cur).sort().reverse().slice(0,7);
-  if(!keys.length){ hw.innerHTML='<div style="font-size:13px;color:#aaa;font-style:italic;padding:4px 0">Aucun historique encore.</div>'; return; }
+  if(!keys.length){ hw.innerHTML='<div style="font-size:13px;color:#aaa;padding:4px 0;font-style:italic">Aucun historique encore.</div>'; return; }
   hw.innerHTML=keys.map(k=>{
     const dd2=data[k], u=(dd2.items||[]).reduce((s,i)=>s+(i.pts||0),0), g=dd2.goal||23, ov=u>g;
     return'<div class="hist-row"><span class="hist-date">'+fmtDate(k)+'</span><span class="hist-val '+(ov?'over':'ok')+'">'+r1(u)+' / '+g+' pts '+(ov?'⚠️':'✓')+'</span></div>';
@@ -437,13 +407,13 @@ function render() {
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
-  loadLocal();
-  const script = document.createElement('script');
-  script.src = 'https://accounts.google.com/gsi/client';
-  script.onload = initGoogleAuth;
-  document.head.appendChild(script);
-});
+loadLocal();
+document.getElementById('date-lbl').textContent=fmtDate(cur);
+
+const gsiScript=document.createElement('script');
+gsiScript.src='https://accounts.google.com/gsi/client';
+gsiScript.onload=onGapiLoad;
+document.head.appendChild(gsiScript);
 </script>
 </body>
 </html>
